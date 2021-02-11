@@ -1,0 +1,15 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+<div style="text-align: center">
+    <h1>Dodaj komentarz</h1>
+    <hr>
+    <form method="post" action="{% url 'add-comment' article.slug %}">
+    {% csrf_token %}
+    {{ form }}
+    {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}"><br>
+    {% endif %}
+        <input type="submit" class="btn btn-primary" value="zapisz">
+    </form>
+</div>
+{% endblock %}

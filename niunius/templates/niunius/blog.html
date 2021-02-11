@@ -1,0 +1,70 @@
+{% extends  "niunius/base.html" %}
+{% block content %}
+
+<div class="container">
+
+<div class="row p-2">
+    <div class="col-3"><h3 style="text-align: center">Lista wydarzeń</h3></div>
+    <div class="col-1"></div>
+    <div class="col-8"><h3 style="text-align: center">Ostatnie wydarzenia</h3></div>
+</div>
+
+<div class="row p-3">
+<div class="col-3">
+    <nav class="nav flex-column">
+        {% for article in page_obj %}
+        <a class="nav-link" style="color: black" href="{% url 'article-detail' article.slug %}">{{ article.title }}</a>
+        {% endfor %}
+        <a style="color: orange" href="{% url 'add-article' %}">dodaj nowe</a>
+    </nav>
+</div>
+<div class="col-1"></div>
+<div class="col-8">
+    <div id="carouselExampleControls" class="carousel slide carousel-fade" data-ride="carousel">
+        <div class="carousel-inner">
+        {% for article in articles %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="container" style="text-align: center">
+                    <h5><a  style="color: black; text-decoration: None" href="{% url 'article-detail' article.slug %}">{{ article.title }}</a></h5>
+                </div><hr>
+                <img class="d-block w-100" src="{{ article.articlephoto_set.all.0.photo.url }}" alt="slide">
+            </div>
+        {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only visually-hidden">Poprzednie</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only visually-hidden">Następne</span>
+        </a>
+    </div>
+</div>
+</div>
+
+<div class="row p-2">
+<div class="col-3">
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a style="color: darkorange" href="?page=1">&laquo; pierwsza</a>
+            <a style="color: orange" href="?page={{ page_obj.previous_page_number }}">poprzednia</a>
+        {% endif %}
+
+        <span class="current">
+            Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a style="color: orange" href="?page={{ page_obj.next_page_number }}">następna</a>
+            <a style="color: darkorange" href="?page={{ page_obj.paginator.num_pages }}">ostatnia &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+<div class="col-1"></div>
+<div class="col-8"></div>
+</div>
+</div>
+{% endblock %}

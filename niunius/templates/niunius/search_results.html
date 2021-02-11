@@ -1,0 +1,26 @@
+{% extends "niunius/shop.html" %}
+{% block title %}<h3>Wyniki wyszukiwania</h3>{% endblock %}
+{% block content-shop %}
+<div class="col-7 p-3" style="background: lightgray">
+    <div class="row" style="text-align: center">
+        <div class="col">
+            <h4>Kategorie</h4><hr>
+                {% for category in object_list %}
+                    <p><a href="{% url 'category' category.slug %}">{{ category.name }}</a></p>
+                {% endfor %}
+        </div>
+        <div class="col">
+            <h4>Produkty</h4><hr>
+                {% for product in search_product %}
+                    <p><a href="{% url 'product' product.slug %}">{{ product.name }}</a></p>
+                {% endfor %}
+        </div>
+        <div class="col">
+            <h4>Modele</h4><hr>
+                {% for car in search_car %}
+                    <p><a href="{% url 'car' car.slug %}">{{ car.name }}</a></p>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

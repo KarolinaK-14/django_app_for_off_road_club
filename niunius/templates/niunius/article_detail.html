@@ -1,0 +1,32 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+<div class="container">
+<div class="row p-2">
+    <h4 style="text-align: center">{{ article.title }}</h4>
+</div>
+<div class="row">
+    <div class="col"><p>{{ article.content }}</p></div>
+    <div class="col"><img class="img-fluid" src="{{ article.articlephoto_set.all.0.photo.url }}" alt="photo"></div>
+</div>
+<div class="row">
+    <button type="button" class="col-2 btn btn-dark" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Komentarze ({{ comments_count }})
+    </button>
+    <a class="col-1 btn btn-secondary" href="{% url 'add-comment' article.slug %}?next={{ request.path }}">dodaj</a>
+    <form class="col-2" action="" method="post">
+        {% csrf_token %}
+        <button name="like" type="submit" class="btn btn-success">&#128077; ({{ article.like }})</button>
+        <button name="dislike" type="submit" class="btn btn-danger">&#128078; ({{ article.dislike }})</button>
+    </form>
+</div>
+<div class="collapse" id="collapseExample">
+    <div class="card card-body">
+        {% for comment in comments %}
+        <p>{{ comment.text }}<br>
+            <span  style="font-size: small;">{{ comment.user }}, {{ comment.added }}</span>
+        </p>
+        {%  endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

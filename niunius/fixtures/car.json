@@ -1,0 +1,11 @@
+[
+  {
+    "model": "niunius.car",
+    "pk": 4,
+    "fields": {
+      "brand": "Mitsubishi",
+      "model": "Galant",
+      "image": "niunius/car_img/car.png"
+    }
+  }
+]

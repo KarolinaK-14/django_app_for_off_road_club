@@ -1,0 +1,37 @@
+{% extends "niunius/shop.html" %}
+{% block title %}{% endblock %}
+{% block content-shop %}
+
+<style>
+    input[type=number]::-webkit-inner-spin-button {
+    opacity: 1
+    }
+</style>
+
+<div class="col-7 p-2" style="background: lightgray; position: relative">
+    <ol>
+    {% for i in items %}
+        <li><span>{{ i.product.name }}</span>
+            <form style="display: inline" method="post" action="">
+                {% csrf_token %}
+                <input type="hidden" name="product" value="{{ i.product_id }}">
+                <input style="width: 46px; height: 27px" type="number" min="1" step="1" name="qty" value="{{ i.quantity }}">
+                <input type="submit" value="Przelicz">
+            </form>
+            <span>{{ i.value }} zł</span>
+            <form style="display: inline" method="post" action="{% url 'delete-item' i.id %}">
+                {% csrf_token %}
+                <input type="submit" value="Usuń">
+            </form>
+        </li>
+    {% empty %}
+    <p>Twój koszyk jest pusty</p>
+    {% endfor %}
+    </ol>
+
+{% if total %}
+    <p style="position: absolute; bottom: 0;"><strong>Razem do zapłaty:</strong> {{ total }} zł</p>
+{% endif %}
+
+</div>
+{% endblock  %}

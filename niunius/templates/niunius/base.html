@@ -1,0 +1,70 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Niunius</title>
+</head>
+<body style="background-color: grey">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a style="color: darkorange" class="navbar-brand" href="{% url 'home' %}">NIUNIUŚ</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% url 'blog' as blog %}
+          {% url 'shop' as shop %}
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">o klubie</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == blog %}active{% endif %}" aria-current="page" href="{% url 'blog' %}">wydarzenia</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
+        </li>
+      </ul>
+        {% if request.user.is_superuser%}
+            <a class="btn btn-outline-success" href="{% url 'admin:index' %}">admin</a>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+            <a class="btn btn-outline-success" href="{% url 'logout' %}">wyloguj się</a>
+        {% else %}
+            <a class="btn btn-outline-success" href="{% url 'login' %}?next={{ request.path }}">zaloguj się</a>
+        {% endif %}
+    </div>
+  </div>
+</nav>
+
+{% block content %}
+<div class="text-center mt-5">
+    <h3>Witaj na stronie klubu off-roadowego <span style="color: floralwhite">NIUNIUŚ</span></h3>
+</div>
+<hr>
+<div class="text-center mt-5">
+    <img src="{% static 'niunius/img/car.png' %}" class="img-fluid" alt="logo">
+</div>
+{% endblock %}
+
+<nav class="navbar fixed-bottom navbar-dark bg-dark p-2">
+  <div class="container-fluid"></div>
+</nav>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+</html>

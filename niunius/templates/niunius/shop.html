@@ -1,0 +1,51 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row p-3" style="text-align: center">
+        <div class="col-3">
+            <form action="{% url 'search' %}" method="get">
+                <input name="query" type="text" placeholder="Szukaj...">
+            </form>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-7">
+            {% block title %}
+                <h3>Nowości</h3>
+            {% endblock %}
+        </div>
+        <div class="col-1">
+            <p><a style="color: orange" href="{% url 'cart'  %}">Koszyk</a></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3" style="background: lightgray">
+            <h3>Model auta</h3>
+            {% for car in cars %}
+                <p><a style="color: black" href="{% url 'car' car.slug %}">{{car.name}}</a></p>
+            {% endfor %}
+            <h3>Kategoria</h3>
+            {% for category in categories %}
+                <p><a style="color: black" href="{% url 'category' category.slug %}">{{category.name}}</a></p>
+            {% endfor %}
+        </div>
+        <div class="col-1"></div>
+
+        {% block content-shop %}
+        <div class="col-7">
+            <table>
+                <tr class="row">
+                    {% for p in latest_products %}
+                    <td class="col-4">
+                        <img class="img-fluid img-thumbnail " src="{{ p.image.url }}" alt="product">
+                        <p><a style="color: orange" href="{% url 'product' p.slug %}">{{ p.name }}</a></p>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        {% endblock %}
+
+    </div>
+</div>
+{% endblock %}
