@@ -22,7 +22,7 @@ def article():
         slug="tytul",
         content="tresc",
         user=user,
-        added="2021-05-05",
+        added="2020-10-15T22:17:44Z",
         like=2,
         dislike=5,
     )
@@ -74,3 +74,9 @@ def car():
     return Car.objects.create(
         brand="marka", model="model", slug="marka-model", image=image
     )
+
+
+@pytest.fixture
+def image():
+    return tempfile.NamedTemporaryFile(suffix=".jpg").name
+

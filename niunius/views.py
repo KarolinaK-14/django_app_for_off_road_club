@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
-from django.db.models import F, Sum
+from django.db.models import F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from .forms import LoginForm, ArticleForm, ArticleCommentForm
 from .models import (
     Article,
@@ -17,9 +17,8 @@ from .models import (
 )
 
 
-class HomeView(View):
-    def get(self, request):
-        return render(request, "niunius/base.html")
+class HomeView(TemplateView):
+    template_name = "niunius/base.html"
 
 
 class LoginView(View):
