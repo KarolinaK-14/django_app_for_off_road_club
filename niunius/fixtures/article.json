@@ -1,0 +1,22 @@
+[
+  {
+    "model": "niunius.article",
+    "pk": 1,
+    "fields": {
+      "title": "W Błotku Najlepiej",
+      "slug": "w-blotku-najlepiej",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas mattis finibus malesuada. Mauris erat tortor, commodo ac feugiat nec, feugiat nec leo. Pellentesque vitae quam dictum, facilisis tortor volutpat, efficitur erat. Donec sit amet metus accumsan, facilisis orci nec, laoreet orci. Suspendisse pretium erat orci, a tempor orci tempus ut. Proin vitae mi eget ex euismod viverra. Aliquam quis enim ligula. Nullam suscipit semper purus, in bibendum est mattis in. In sed leo fermentum, viverra ex non, interdum magna. Ut finibus dapibus nisl, eget mollis est gravida id. Praesent ut eros auctor, lacinia dui eu, ultricies est. Donec mauris orci, vestibulum non fringilla ac, condimentum tempus tortor.",
+      "added": "2020-10-15T22:17:44Z"
+    }
+  },
+  {
+    "model": "niunius.article",
+    "pk": 2,
+    "fields": {
+      "title": "Leśny Extreme",
+      "slug": "lesny-extreme",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consectetur eros enim, ac dignissim diam mattis in. Maecenas malesuada convallis tempus. Donec id venenatis mi. Etiam ac fringilla nisi. Ut dictum consectetur porta. Duis pellentesque, metus ac iaculis sodales, mauris lacus elementum massa, sit amet feugiat ex metus in est. Aliquam molestie non diam vel fermentum.",
+      "added": "2020-09-15T22:17:44Z"
+    }
+  }
+]

@@ -74,17 +74,18 @@ class ArticleAddView(View):
         return render(request, "niunius/article_form.html", ctx)
 
     def post(self, request):
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST, request.FILES)
+
         if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
             article = Article.objects.create(
                 title=title, content=content, user=request.user
             )
-            photos = request.FILES.getlist("photo")
-            for photo in photos:
+            for photo in request.FILES.getlist("photos"):
                 ArticlePhoto.objects.create(photo=photo, article=article)
             return redirect("blog")
+
         ctx = {"form": form}
         return render(request, "niunius/article_form.html", ctx)
 

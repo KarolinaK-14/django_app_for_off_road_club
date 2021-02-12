@@ -8,9 +8,14 @@ class LoginForm(forms.Form):
 
 
 class ArticleForm(forms.ModelForm):
+    photos = forms.ImageField(
+        label="",
+        widget=forms.ClearableFileInput(attrs={'multiple': True}),
+    )
+
     class Meta:
         model = Article
-        fields = ["title", "content"]
+        fields = ["title", "content", "photos"]
         labels = {"title": "", "content": ""}
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "nazwa wydarzenia"}),

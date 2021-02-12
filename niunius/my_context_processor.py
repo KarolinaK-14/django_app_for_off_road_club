@@ -1,7 +1,7 @@
 from .models import Car, Category, Product
 
 
-def my_cp():
+def my_cp(request):
     ctx = {
         "cars": Car.objects.all(),
         "categories": Category.objects.all(),

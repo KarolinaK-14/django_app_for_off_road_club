@@ -1,0 +1,26 @@
+[
+  {
+    "model": "niunius.category",
+    "pk": 1,
+    "fields": {
+      "name": "Koła Felgi Opony",
+      "slug": "kola-felgi-opony"
+    }
+  },
+  {
+    "model": "niunius.category",
+    "pk": 2,
+    "fields": {
+      "name": "Oświetlenie",
+      "slug": "oswietlenie"
+    }
+  },
+  {
+    "model": "niunius.category",
+    "pk": 3,
+    "fields": {
+      "name": "Układ hamulcowy",
+      "slug": "uklad-hamulcowy"
+    }
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "model": "niunius.product",
+    "pk": 1,
+    "fields": {
+      "name": "Halogen",
+      "slug": "halogen",
+      "added": "2020-09-15T22:17:44Z",
+      "code": "93jr98ncmx0",
+      "stock": 5,
+      "description": "Halogen w zderzak (bez żarówki).\n\nMiejsce montażu - prawa i lewa strona.",
+      "price": 300,
+      "image": "niunius/product_img/halogen.png",
+      "cars": [2, 3],
+      "categories": [2]
+    }
+  },
+  {
+    "model": "niunius.product",
+    "pk": 2,
+    "fields": {
+      "name": "Tylna lampa",
+      "slug": "tylna-lampa",
+      "added": "2020-09-15T22:17:44Z",
+      "code": "678u90q12-pl",
+      "stock": 10,
+      "description": "Tylna lampa wraz z żarówkami - lewa.",
+      "price": 210,
+      "image": "niunius/product_img/tylna_lampa.png",
+      "cars": [2, 3],
+      "categories": [2]
+    }
+  },
+    {
+    "model": "niunius.product",
+    "pk": 3,
+    "fields": {
+      "name": "Tarcza hamulcowa",
+      "slug": "tarcza-hamulcowa",
+      "added": "2020-09-15T22:17:44Z",
+      "code": "222iii222---",
+      "stock": 50,
+      "description": "Tarcza hamulcowa.\n\nMiejsce montażu - tył / prawa=lewa.\n\nParametry:\n- Średnica [mm]: 332 mm\n- Typ tarczy hamulcowej: wentylowany",
+      "price": 200,
+      "image": "niunius/product_img/tarcza.png",
+      "cars": [3],
+      "categories": [3]
+    }
+  },
+    {
+    "model": "niunius.product",
+    "pk": 4,
+    "fields": {
+      "name": "Klocki hamulcowe",
+      "slug": "klocki-hamulcowe",
+      "added": "2020-09-15T22:17:44Z",
+      "code": "123xxx45",
+      "stock": 30,
+      "description": "Zestaw klocków hamulcowych na przednią oś.\nWysokojakościowa wersja PREMIUM - niepylące.",
+      "price": 150,
+      "image": "niunius/product_img/klocki.png",
+      "cars": [1, 3],
+      "categories": [3]
+    }
+  }
+]

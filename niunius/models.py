@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 
 
@@ -7,7 +8,7 @@ class Article(models.Model):
     title = models.CharField(max_length=128)
     slug = models.SlugField(unique=True, blank=True)
     content = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     added = models.DateTimeField(auto_now_add=True)
     like = models.IntegerField(default=0)
     dislike = models.IntegerField(default=0)
@@ -42,7 +43,7 @@ class Car(models.Model):
     brand = models.CharField(max_length=64)
     model = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(unique=True, blank=True)
-    image = models.ImageField(null=True, blank=True, upload_to="niunius/car_img/")
+    image = models.ImageField(blank=True, upload_to="niunius/car_img/")
 
     @property
     def name(self):
@@ -76,7 +77,7 @@ class Product(models.Model):
     stock = models.IntegerField()
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image = models.ImageField(null=True, blank=True, upload_to="niunius/product_img/")
+    image = models.ImageField(blank=True, upload_to="niunius/product_img/")
     cars = models.ManyToManyField(Car)
     categories = models.ManyToManyField(Category)
 

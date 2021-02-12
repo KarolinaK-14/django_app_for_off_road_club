@@ -1,11 +1,32 @@
 [
   {
     "model": "niunius.car",
-    "pk": 4,
+    "pk": 1,
     "fields": {
       "brand": "Mitsubishi",
-      "model": "Galant",
-      "image": "niunius/car_img/car.png"
+      "model": "Colt",
+      "slug": "mitsubishi-colt",
+      "image": "niunius/car_img/colt.png"
+    }
+  },
+  {
+    "model": "niunius.car",
+    "pk": 2,
+    "fields": {
+      "brand": "Mitsubishi",
+      "model": "Space Star",
+      "slug": "mitsubishi-space-star",
+      "image": "niunius/car_img/space_star.png"
+    }
+  },
+  {
+    "model": "niunius.car",
+    "pk": 3,
+    "fields": {
+      "brand": "Mitsubishi",
+      "model": "Pajero",
+      "slug": "mitsubishi-pajero",
+      "image": "niunius/car_img/pajero.png"
     }
   }
 ]

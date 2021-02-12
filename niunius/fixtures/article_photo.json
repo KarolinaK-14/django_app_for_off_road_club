@@ -1,0 +1,26 @@
+[
+  {
+    "model": "niunius.articlephoto",
+    "pk": 1,
+    "fields": {
+      "article": 1,
+      "photo": "niunius/blog_img/w_blotku_najlepiej.jpg"
+    }
+  },
+  {
+    "model": "niunius.articlephoto",
+    "pk": 2,
+    "fields": {
+      "article": 2,
+      "photo": "niunius/blog_img/lesny_extreme_2.jpg"
+    }
+  },
+    {
+    "model": "niunius.articlephoto",
+    "pk": 3,
+    "fields": {
+      "article": 2,
+      "photo": "niunius/blog_img/lesny_extreme_2.jpg"
+    }
+  }
+]
