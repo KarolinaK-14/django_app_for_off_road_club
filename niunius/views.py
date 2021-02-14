@@ -1,10 +1,11 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator
 from django.db.models import F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, TemplateView
-from .forms import LoginForm, ArticleForm, ArticleCommentForm
+from .forms import ArticleForm, ArticleCommentForm
 from .models import (
     Article,
     ArticlePhoto,
@@ -19,39 +20,6 @@ from .models import (
 
 class HomeView(TemplateView):
     template_name = "niunius/base.html"
-
-
-class LoginView(View):
-    def get(self, request):
-        form = LoginForm()
-        ctx = {
-            "form": form,
-        }
-        return render(request, "niunius/login.html", ctx)
-
-    def post(self, request):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(username=username, password=password)
-
-            if user is None:
-                return redirect("login")
-
-            login(request, user=user)
-            if "next" in request.POST:
-                return redirect(request.POST.get("next"))
-            else:
-                return redirect("home")
-
-        return redirect("login")
-
-
-class LogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect("home")
 
 
 class BlogView(View):
@@ -69,7 +37,7 @@ class ArticleAddView(View):
         form = ArticleForm()
         ctx = {"form": form}
         if not request.user.is_authenticated:
-            return redirect("%s?next=%s" % ("/login/", request.path))
+            return redirect("%s?next=%s" % ("/accounts/login/", request.path))
         return render(request, "niunius/article_form.html", ctx)
 
     def post(self, request):
@@ -95,7 +63,7 @@ class CommentAddView(View):
         form = ArticleCommentForm()
         ctx = {"form": form, "article": article}
         if not request.user.is_authenticated:
-            return redirect("%s?next=%s" % ("/login/", request.path))
+            return redirect("%s?next=%s" % ("/accounts/login/", request.path))
         return render(request, "niunius/article_comment_form.html", ctx)
 
     def post(self, request, slug):
@@ -253,3 +221,23 @@ class SearchView(ListView):
         ) | Product.objects.filter(code__icontains=query)
         context["search_car"] = Car.objects.filter(model__icontains=query)
         return context
+
+
+class UserCreationView(View):
+
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, "niunius/signup.html", {"form": form})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+        else:
+            form = UserCreationForm()
+        return render(request, "niunius/signup.html", {"form": form})

@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('') }}</a></h1>
+{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'home' %}">{% translate 'Home' %}</a></div>{% endblock %}
+
+{% block extrastyle %}
+<style>
+#header {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+    background: #212529;
+    color: #ffc;
+    overflow: hidden;
+}
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: darkorange;
+}
+div.breadcrumbs {
+    background: #212529;
+    padding: 10px 40px;
+    border: none;
+    font-size: 14px;
+    color: #c4dce8;
+    text-align: left;
+}
+div.breadcrumbs a {
+    color: darkorange;
+}
+</style>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
