@@ -30,4 +30,4 @@ jobs:
         pycodestyle . --ignore=E501,W504 --exclude=migrations
     - name: Automated tests
       run: |
-        python manage.py test
+        py.test
