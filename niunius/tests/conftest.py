@@ -79,4 +79,3 @@ def car():
 @pytest.fixture
 def image():
     return tempfile.NamedTemporaryFile(suffix=".jpg").name
-
