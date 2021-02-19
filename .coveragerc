@@ -1,0 +1,14 @@
+[run]
+include =
+    views.py
+omit =
+    *apps.py,
+    *admin.py,
+    *migrations/*,
+    *settings*,
+    *urls.py,
+    *wsgi.py,
+    *tests/*,
+    manage.py,
+    *context_processor.py,
+    *init*
