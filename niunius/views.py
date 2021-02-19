@@ -380,7 +380,8 @@ class ConfirmationView(View):
         payment_msg = (
             f"Dziękujemy za złożenie zamówienia w naszym sklepie. "
             f"Aby sfinalizować zakup wykonaj przelew na konto bankowe nr: 1234567890. "
-            f'W tytule przelewu wpisz: "{order.buyer.first_name} {order.buyer.last_name}, '
+            f'W tytule przelewu wpisz: '
+            f'"{order.buyer.first_name} {order.buyer.last_name}, '
             f'zamówienie #{order.pk}, '
             f'{timezone.now().date()}"'
         )
