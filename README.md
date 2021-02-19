@@ -18,7 +18,7 @@ For start, follow the below steps:
         pass
     ```
 3. run the command `python manage.py makemigrations` and then `python manage.py migrate`
-4. load initial data to fill your database - use the command `ppython manage.py loaddata */fixtures/*.json`
+4. load initial data to fill your database - use the command `python manage.py loaddata */fixtures/*.json`
 5. finally run `python manage.py runserver` and enjoy the app :)
 
 ## Blog 
