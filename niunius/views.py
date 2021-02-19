@@ -377,11 +377,13 @@ class ConfirmationView(View):
         including the payment instruction."""
         order = Order.objects.get(pk=pk)
         items = order.cart.cartitem_set.all().order_by("pk")
-        ctx = {
-            "order": order,
-            "items": items,
-            "payment_msg": f"Dziękujemy za złożenie zamówienia w naszym sklepie. "
-            "Aby sfinalizować zakup wykonaj przelew na konto bankowe nr: 1234567890. "
-            f'W tytule przelewu wpisz: "{order.buyer.first_name} {order.buyer.last_name}, zamówienie #{order.pk}, {timezone.now().date()}"',
-        }
+        payment_msg = (
+            f"Dziękujemy za złożenie zamówienia w naszym sklepie. "
+            f"Aby sfinalizować zakup wykonaj przelew na konto bankowe nr: 1234567890. "
+            f'W tytule przelewu wpisz: "{order.buyer.first_name} {order.buyer.last_name}, '
+            f'zamówienie #{order.pk}, '
+            f'{timezone.now().date()}"'
+        )
+
+        ctx = {"order": order, "items": items, "payment_msg": payment_msg}
         return render(request, "niunius/confirmation.html", ctx)

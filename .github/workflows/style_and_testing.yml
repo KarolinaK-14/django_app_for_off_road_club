@@ -27,7 +27,7 @@ jobs:
     - name: Style check
       run: |
         python -m pip install pycodestyle
-        pycodestyle . --exclude=migrations --max-line-length=88
+        pycodestyle . --exclude=migrations,settings --max-line-length=88
     - name: Automated tests
       run: |
         pytest

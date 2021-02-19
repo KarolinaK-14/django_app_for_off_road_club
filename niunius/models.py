@@ -174,4 +174,8 @@ class Order(models.Model):
         verbose_name_plural = "Zamówienia"
 
     def __str__(self):
-        return f"Zamówienie nr: {self.id}, Klient: {self.buyer.first_name} {self.buyer.last_name}"
+        output = (
+            f"Zamówienie nr: {self.id}, "
+            f"Klient: {self.buyer.first_name} {self.buyer.last_name}"
+        )
+        return output
