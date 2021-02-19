@@ -12,7 +12,7 @@
     <button type="button" class="col-2 btn btn-dark" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
         Komentarze ({{ comments_count }})
     </button>
-    <a class="col-1 btn btn-secondary" href="{% url 'add-comment' article.slug %}?next={{ request.path }}">dodaj</a>
+    <a class="col-1 btn btn-secondary" href="{% url 'add-comment' article.pk %}?next={{ request.path }}">dodaj</a>
     <form class="col-2" action="" method="post">
         {% csrf_token %}
         <button name="like" type="submit" class="btn btn-success">&#128077; ({{ article.like }})</button>

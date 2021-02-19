@@ -15,7 +15,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a style="color: darkorange" class="navbar-brand" href="{% url 'home' %}">NIUNIUŚ</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -35,6 +35,7 @@
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
         </li>
       </ul>
+
         {% if request.user.is_superuser%}
             <a class="btn btn-outline-success" href="{% url 'admin:index' %}">admin</a>
         {% endif %}
@@ -44,6 +45,7 @@
             <a class="btn btn-outline-success" href="{% url 'login' %}?next={{ request.path }}">zaloguj się</a>
             <a class="btn btn-outline-success" href="{% url 'signup' %}?next={{ request.path }}">zarejestruj się</a>
         {% endif %}
+
     </div>
   </div>
 </nav>
@@ -60,7 +62,11 @@
 {% endblock %}
 
 <nav class="navbar fixed-bottom navbar-dark bg-dark p-2">
-  <div class="container-fluid"></div>
+  <div class="container-fluid">
+{#      <audio autoplay loop>#}
+{#          <source src="{% static 'niunius/music/stumblin_in.mp3' %}" type="audio/mpeg">#}
+{#      </audio>#}
+  </div>
 </nav>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

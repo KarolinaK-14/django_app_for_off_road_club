@@ -1,13 +1,13 @@
 {% extends "niunius/base.html" %}
 {% block content %}
 <div style="text-align: center">
-    <h1>Dodaj nowe wydarzenie</h1>
+    <h2>Dodaj nowe wydarzenie</h2>
     <hr>
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p}}
         <hr>
-        <input type="submit" value="zapisz">
+        <input type="submit" value="dodaj">
     </form>
 </div>
 {% endblock %}

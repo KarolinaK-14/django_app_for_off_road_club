@@ -3,7 +3,7 @@
 <div style="text-align: center">
     <h1>Dodaj komentarz</h1>
     <hr>
-    <form method="post" action="{% url 'add-comment' article.slug %}">
+    <form method="post" action="{% url 'add-comment' article.pk %}">
     {% csrf_token %}
     {{ form }}
     {% if request.GET.next %}

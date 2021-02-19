@@ -1,18 +1,39 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Article, ArticleComment, Order
 
-from .models import Article, ArticleComment
+
+class BuyerForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email"]
+        labels = {"first_name": "imię", "last_name": "nazwisko", "email": "email"}
 
 
-# class LoginForm(forms.Form):
-#     username = forms.CharField(label="Nazwa użytkownika")
-#     password = forms.CharField(widget=forms.PasswordInput, label="Hasło")
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = [
+            "address_country",
+            "address_street",
+            "address_zipcode",
+            "address_city",
+        ]
+        labels = {
+            "address_city": "miasto",
+            "address_zipcode": "kod pocztowy",
+            "address_street": "ulica",
+            "address_country": "kraj",
+        }
+        widgets = {
+            "address_zipcode": forms.TextInput(attrs={"placeholder": "XX-XXX"}),
+            "address_country": forms.TextInput(attrs={"value": "Polska"}),
+        }
 
 
 class ArticleForm(forms.ModelForm):
     photos = forms.ImageField(
-        label="",
-        widget=forms.ClearableFileInput(attrs={'multiple': True}),
+        label="", widget=forms.ClearableFileInput(attrs={"multiple": True})
     )
 
     class Meta:

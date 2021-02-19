@@ -16,7 +16,7 @@
             <p>Dostępność: {{ product.stock }} szt.</p>
             <form method="post" action="">
                 {% csrf_token %}
-                <input style="width: 46px; height: 27px" type="number" step="1" min="1" name="qty" value="1">
+                <input style="width: 46px; height: 27px" type="number" step="1" min="1" max="{{ product.stock }}" name="qty" value="1">
                 <input type="submit" value="Dodaj do koszyka">
             </form>
         </div>

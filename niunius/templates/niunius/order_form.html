@@ -1,0 +1,14 @@
+{% extends "niunius/shop.html" %}
+{% block title %}<h3>Zamówienie {{ order.pk }}</h3>{% endblock %}
+{% block content-shop %}
+    <div class="col-7 p-2" style="background: lightgray; position: relative">
+        <form method="post">
+            {% csrf_token %}
+            <h4>Dane kupującego</h4>
+            {{ buyer_form.as_p }}
+            <h4>Adres dostawy</h4>
+            {{ form.as_p }}
+            <input class="btn btn-warning" type="submit" value="Zamawiam">
+        </form>
+    </div>
+{% endblock %}

@@ -12,15 +12,47 @@
     "pk": 2,
     "fields": {
       "article": 2,
-      "photo": "niunius/blog_img/lesny_extreme_2.jpg"
+      "photo": "niunius/blog_img/lesny_extreme.jpg"
     }
   },
-    {
+  {
     "model": "niunius.articlephoto",
     "pk": 3,
     "fields": {
       "article": 2,
       "photo": "niunius/blog_img/lesny_extreme_2.jpg"
+    }
+  },
+  {
+    "model": "niunius.articlephoto",
+    "pk": 4,
+    "fields": {
+      "article": 3,
+      "photo": "niunius/blog_img/przez_pustynie.jpg"
+    }
+  },
+  {
+    "model": "niunius.articlephoto",
+    "pk": 5,
+    "fields": {
+      "article": 4,
+      "photo": "niunius/blog_img/kobieta_za_kolkiem.jpg"
+    }
+  },
+  {
+    "model": "niunius.articlephoto",
+    "pk": 6,
+    "fields": {
+      "article": 4,
+      "photo": "niunius/blog_img/kobieta_za_kolkiem_2.jpg"
+    }
+  },
+  {
+    "model": "niunius.articlephoto",
+    "pk": 7,
+    "fields": {
+      "article": 5,
+      "photo": "niunius/blog_img/dla_dzieci.jpg"
     }
   }
 ]

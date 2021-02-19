@@ -1,26 +1,20 @@
-from django.contrib.auth.models import User
-from niunius.models import Article, Car, Category
 import pytest
-import tempfile
+from mixer.backend.django import mixer
+
+from niunius.models import Article, Product
 
 
 @pytest.fixture
 def user():
-    username = "user1"
-    password = "user1"
-    user = User.objects.create_user(username=username, password=password)
-    return user
+    return mixer.blend("auth.User")
 
 
 @pytest.fixture
 def article():
-    username = "user1"
-    password = "user1"
-    user = User.objects.create_user(username=username, password=password)
+    user = mixer.blend("auth.User")
     return Article.objects.create(
-        title="tytul",
-        slug="tytul",
-        content="tresc",
+        title="test_title",
+        content="test_content",
         user=user,
         added="2020-10-15T22:17:44Z",
         like=2,
@@ -30,33 +24,31 @@ def article():
 
 @pytest.fixture
 def articles():
-    username = "user1"
-    password = "user1"
-    user = User.objects.create_user(username=username, password=password)
+    user = mixer.blend("auth.User")
     a1 = Article.objects.create(
-        title="tytul1",
-        slug="tytul1",
-        content="tresc1",
+        title="test title 1",
+        slug="test-title-1",
+        content="test_content",
         user=user,
-        added="2021-05-07 10:10",
+        added="",
         like=0,
         dislike=0,
     )
     a2 = Article.objects.create(
-        title="tytul2",
-        slug="tytul2",
-        content="tresc2",
+        title="test_title_2",
+        slug="test-title-2",
+        content="test_content_2",
         user=user,
-        added="2021-05-06 11:11",
+        added="",
         like=2,
         dislike=2,
     )
     a3 = Article.objects.create(
-        title="tytul3",
-        slug="tytul3",
-        content="tresc3",
+        title="test_title_3",
+        slug="test-title-3",
+        content="test_content_3",
         user=user,
-        added="2021-05-05 12:12",
+        added="",
         like=4,
         dislike=4,
     )
@@ -65,17 +57,43 @@ def articles():
 
 @pytest.fixture
 def category():
-    return Category.objects.create(name="nazwa", slug="nazwa")
+    return mixer.blend("niunius.Category")
 
 
 @pytest.fixture
 def car():
-    image = tempfile.NamedTemporaryFile(suffix=".jpg").name
-    return Car.objects.create(
-        brand="marka", model="model", slug="marka-model", image=image
-    )
+    return mixer.blend("niunius.Car", image="test.gif")
 
 
 @pytest.fixture
-def image():
-    return tempfile.NamedTemporaryFile(suffix=".jpg").name
+def product():
+    return mixer.blend("niunius.Product", image="test.gif")
+
+
+@pytest.fixture
+def products():
+    p1 = Product.objects.create(
+        name="test name 1",
+        code="abc1",
+        stock=1,
+        description="test description 1",
+        price=9.99,
+        image="test.gif",
+    )
+    p2 = Product.objects.create(
+        name="test name 2",
+        code="abc2",
+        stock=2,
+        description="test description 2",
+        price=19.99,
+        image="test.gif",
+    )
+    p3 = Product.objects.create(
+        name="test name 3",
+        code="abc3",
+        stock=3,
+        description="test description 3",
+        price=29.99,
+        image="test.gif",
+    )
+    return [p1, p2, p3]
