@@ -27,7 +27,7 @@ For start, follow the below steps:
 
 The Blog subpage display articles. Only an authenticated user can add a new article. 
 After clicking on a title you are redirected to article details. Besides photo and description, there are three buttons:
-comments, like and dislike. Like and Dislike can be used by everybody. As for comments, all users can read existing comments, byt only authenticated users can add a new comment.
+comments, like and dislike. Like and Dislike can be used by everyone. As for comments, all users can read existing comments, byt only authenticated users can add a new comment.
 
 ## Shop
 
