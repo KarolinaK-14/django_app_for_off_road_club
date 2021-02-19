@@ -30,4 +30,4 @@ jobs:
         pycodestyle . --exclude=migrations,settings.py --max-line-length=88
     - name: Automated tests
       run: |
-        pytest
+        python -m pytest
