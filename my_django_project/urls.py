@@ -50,6 +50,7 @@ urlpatterns = [
         name="confirmation",
     ),
     path("szukaj/", v.SearchView.as_view(), name="search"),
+    path("calendar/", v.CarServiceView.as_view(), name="calendar"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,6 +9,7 @@ from .models import (
     ShoppingCart,
     CartItem,
     Order,
+    CarService,
 )
 
 
@@ -64,3 +65,8 @@ class CartItemAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     exclude = ["cart"]
+
+
+@admin.register(CarService)
+class CarServiceAdmin(admin.ModelAdmin):
+    pass

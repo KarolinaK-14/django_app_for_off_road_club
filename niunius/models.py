@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -177,6 +179,7 @@ class Order(models.Model):
     )
     address_street = models.CharField(max_length=64, verbose_name="Ulica")
     address_country = models.CharField(max_length=64, verbose_name="Kraj")
+    date = models.DateTimeField(auto_now_add=True, verbose_name="Data zamówienia")
     paid = models.BooleanField(default=False, verbose_name="Zapłacone")
 
     class Meta:
@@ -189,3 +192,41 @@ class Order(models.Model):
             f"Klient: {self.buyer.first_name} {self.buyer.last_name}"
         )
         return output
+
+
+class CarService(models.Model):
+    day = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Warsztat"
+        verbose_name_plural = "Warsztat"
+
+    def check_overlap(self, fixed_start, fixed_end, new_start, new_end):
+        overlap = False
+        if new_start == fixed_end or new_end == fixed_start:
+            overlap = False
+        elif (new_start >= fixed_start and new_start <= fixed_end) or (
+                new_end >= fixed_start and new_end <= fixed_end):
+            overlap = True
+        elif new_start <= fixed_start and new_end >= fixed_end:
+            overlap = True
+        return overlap
+
+    def get_absolute_url(self):
+
+        return reverse('calendar')
+
+    def clean(self):
+        if self.end_time <= self.start_time:
+            raise ValidationError("Sprawdź wybrany przedział czasowy. Początek nie może być później niż koniec.")
+
+        visits = CarService.objects.filter(day=self.day)
+        if visits.exists():
+            for visit in visits:
+                if self.check_overlap(visit.start_time, visit.end_time, self.start_time, self.end_time):
+                    raise ValidationError(
+                        'Niestety wystąpiła kolizja z następującą wizytą: ' + str(visit.day) + ', ' + str(
+                            visit.start_time) + '-' + str(visit.end_time))
