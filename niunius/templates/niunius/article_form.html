@@ -5,9 +5,20 @@
     <hr>
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p}}
+        {{ form.as_p }}
+        <div>
+            <label for="id_photos" class="btn btn-warning">dodaj zdjęcia</label>
+            <span><span id="files-count">0</span> dodano</span>
+        </div>
+
         <hr>
-        <input type="submit" value="dodaj">
+        <input type="submit" value="zapisz">
     </form>
 </div>
+    <script>
+    files_count=document.getElementById("files-count")
+    document.getElementById("id_photos").addEventListener("change", function() {
+        files_count.innerHTML=this.files.length
+    });
+    </script>
 {% endblock %}
