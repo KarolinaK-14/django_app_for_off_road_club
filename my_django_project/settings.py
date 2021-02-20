@@ -121,15 +121,8 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-if os.environ.get('GITHUB_WORKFLOW'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    try:
-        from my_django_project.local_settings import *
-    except ImportError:
-        pass
+
+try:
+    from my_django_project.local_settings import *
+except ImportError:
+    pass
