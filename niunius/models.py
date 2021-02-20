@@ -128,11 +128,13 @@ class Product(models.Model):
 
 
 class ShoppingCart(models.Model):
+    is_ordered = models.BooleanField(default=False)
+
     class Meta:
         verbose_name = "Koszyk"
         verbose_name_plural = "Koszyki"
 
-    def order_total(self):
+    def total(self):
         return sum([item.value for item in self.cartitem_set.all()])
 
     def __str__(self):

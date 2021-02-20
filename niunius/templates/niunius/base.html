@@ -24,21 +24,21 @@
           {% url 'blog' as blog %}
           {% url 'shop' as shop %}
         <li class="nav-item">
-          <a target="_blank" class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">o klubie</a>
+          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">o klubie</a>
         </li>
         <li class="nav-item">
-          <a target="_blank" class="nav-link {% if request.path == blog %}active{% endif %}" aria-current="page" href="{% url 'blog' %}">wydarzenia</a>
+          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link {% if request.path == blog %}active{% endif %}" aria-current="page" href="{% url 'blog' %}">wydarzenia</a>
         </li>
         <li class="nav-item">
-          <a target="_blank" class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
+          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
         </li>
         <li class="nav-item">
-          <a target="_blank" class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
+          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
         </li>
       </ul>
 
         {% if request.user.is_superuser%}
-            <a class="btn btn-outline-success" href="{% url 'admin:index' %}">admin</a>
+            <a target="_blank" class="btn btn-outline-success" href="{% url 'admin:index' %}">admin</a>
         {% endif %}
         {% if request.user.is_authenticated %}
             <a class="btn btn-outline-success" href="{% url 'logout' %}">wyloguj się</a>
@@ -66,7 +66,7 @@
   <div class="container-fluid">
       {% block music %}
       <audio loop controls>
-          <source src="{% static 'niunius/music/stumblin_in.mp3' %}" type="audio/mpeg">
+          <source src="{% static 'niunius/music/song.m4a' %}" type="audio/mpeg">
       </audio>
       {% endblock music %}
   </div>

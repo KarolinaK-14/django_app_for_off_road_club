@@ -191,33 +191,33 @@ class ProductView(View):
 
     def post(self, request, slug):
         """
-        If no shopping cart in the session, create and save one.
+        If no open shopping cart, create and one.
         Then add to the cart the product with the chosen quantity.
 
-        If a shopping cart already saved in the session,
+        If a shopping cart already open,
         just add the product with the chosen quantity.
 
         If the product already added to the cart, just update its quantity.
         """
         product = Product.objects.get(slug=slug)
         qty = int(request.POST.get("qty"))
-        if "cart" not in request.session:
-            cart = ShoppingCart.objects.create()
-            request.session["cart"] = cart.id
+        try:
+            cart = ShoppingCart.objects.get(is_ordered=False)
+        except ShoppingCart.DoesNotExist:
+            new_cart = ShoppingCart.objects.create()
+            CartItem.objects.create(product=product, quantity=qty, cart=new_cart)
+            return redirect("cart")
+
+        try:
+            item = cart.cartitem_set.get(product_id=product.pk)
+        except CartItem.DoesNotExist:
             CartItem.objects.create(product=product, quantity=qty, cart=cart)
             return redirect("cart")
-        else:
-            cart = ShoppingCart.objects.get(pk=request.session["cart"])
-            try:
-                item = cart.cartitem_set.get(product_id=product.pk)
-            except CartItem.DoesNotExist:
-                CartItem.objects.create(product=product, quantity=qty, cart=cart)
-                return redirect("cart")
-            item.quantity += qty
-            item.save()
-            cart.cartitem_set.get(product_id=product.pk).quantity += qty
-            cart.cartitem_set.get(product_id=product.pk).save()
-            return redirect("cart")
+        item.quantity += qty
+        item.save()
+        cart.cartitem_set.get(product_id=product.pk).quantity += qty
+        cart.cartitem_set.get(product_id=product.pk).save()
+        return redirect("cart")
 
 
 class DeleteItemView(View):
@@ -231,33 +231,33 @@ class DeleteItemView(View):
 class ShoppingCartView(View):
     def get(self, request):
         """
-        Get items from the shopping cart saved in the session.
+        Get items from the shopping cart..
         Calculate the total value of these items (quantity * price).
 
-        If no shopping cart saved, display the message about empty cart.
+        If no shopping cart, display an appropriate message.
         """
-        if request.session.get("cart"):
-            cart = ShoppingCart.objects.get(pk=request.session.get("cart"))
-            items = cart.cartitem_set.all().order_by("pk")
-            total = cart.order_total()
-            ctx = {"items": items, "total": total}
-            return render(request, "niunius/cart.html", ctx)
-        else:
+        try:
+            cart = ShoppingCart.objects.get(is_ordered=False)
+        except ShoppingCart.DoesNotExist:
             return render(request, "niunius/cart.html")
+        items = cart.cartitem_set.all().order_by("pk")
+        total = cart.total()
+        ctx = {"items": items, "total": total}
+        return render(request, "niunius/cart.html", ctx)
 
     def post(self, request):
         """
         Update quantity for given item
         and re-calculate the total value of all items in the cart.
         """
-        cart = ShoppingCart.objects.get(pk=request.session.get("cart"))
+        cart = ShoppingCart.objects.get(is_ordered=False)
         items = cart.cartitem_set.all().order_by("pk")
         qty = int(request.POST.get("qty"))
         product = request.POST.get("product")
         item = cart.cartitem_set.get(product=product)
         item.quantity = qty
         item.save()
-        total = cart.order_total()
+        total = cart.total()
         ctx = {"items": items, "total": total}
         return render(request, "niunius/cart.html", ctx)
 
@@ -337,7 +337,7 @@ class OrderView(LoginRequiredMixin, View):
         If added successfully, redirect to the confirmation page.
         Otherwise, return the page with an empty form.
 
-        After the order is created, delete the assigned cart from the session
+        After the order is created, set "is_ordered" field of the assigned cart to True
         and decrease the stock field for ordered products.
         """
         form = OrderForm(request.POST)
@@ -347,7 +347,7 @@ class OrderView(LoginRequiredMixin, View):
             address_zipcode = form.cleaned_data["address_zipcode"]
             address_street = form.cleaned_data["address_street"]
             address_country = form.cleaned_data["address_country"]
-            cart = ShoppingCart.objects.get(pk=request.session.get("cart"))
+            cart = ShoppingCart.objects.get(is_ordered=False)
             order = Order.objects.create(
                 cart=cart,
                 buyer=request.user,
@@ -364,7 +364,8 @@ class OrderView(LoginRequiredMixin, View):
             for item in cart.cartitem_set.all():
                 item.product.stock -= item.quantity
                 item.product.save()
-            del request.session["cart"]
+            cart.is_ordered = True
+            cart.save()
             return redirect("confirmation", order.pk)
         return render(
             request, "niunius/order_form.html", {"form": form, "buyer_form": buyer_form}
