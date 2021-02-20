@@ -127,6 +127,8 @@ try:
 except ImportError:
     pass
 
+from .local_settings import user, password
+
 if os.environ.get('GITHUB_WORKFLOW'):
     DATABASES = {
         'default': {
