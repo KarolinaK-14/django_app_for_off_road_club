@@ -130,10 +130,11 @@ except ImportError:
 if os.environ.get('GITHUB_WORKFLOW'):
     DATABASES = {
         'default': {
-           'ENGINE': 'django.db.backends.postgresql',
+           'ENGINE': 'django.db.backends.postgresql_psycopg2',
            'NAME': 'github_actions',
-           'USER': 'postgres',
-           'PASSWORD': 'postgres',
+           'USER': user,
+           'PASSWORD': password,
            'HOST': 'localhost',
+           'PORT': 5432,
         }
     }
