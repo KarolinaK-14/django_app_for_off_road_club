@@ -126,3 +126,14 @@ try:
     from my_django_project.local_settings import *
 except ImportError:
     pass
+
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'my_database',
+           'USER': 'postgres',
+           'PASSWORD': 'postgres',
+           'HOST': 'localhost',
+        }
+    }
