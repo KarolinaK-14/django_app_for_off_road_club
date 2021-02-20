@@ -33,7 +33,10 @@ class OrderForm(forms.ModelForm):
 
 class ArticleForm(forms.ModelForm):
     photos = forms.ImageField(
-        label="", widget=forms.ClearableFileInput(attrs={"multiple": True, "style": "display: none"})
+        label="",
+        widget=forms.ClearableFileInput(
+            attrs={"multiple": True, "style": "display: none"}
+        ),
     )
 
     class Meta:
