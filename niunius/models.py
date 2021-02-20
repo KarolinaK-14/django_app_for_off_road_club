@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
 
@@ -74,6 +74,9 @@ class Car(models.Model):
     def __str__(self):
         return self.name
 
+    def get_available_products(self):
+        return self.product_set.exclude(stock=0)
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Car, self).save(*args, **kwargs)
@@ -90,6 +93,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_available_products(self):
+        return self.product_set.exclude(stock=0)
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
@@ -100,7 +106,7 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     added = models.DateTimeField(auto_now_add=True, verbose_name="Dodano")
     code = models.CharField(max_length=128, verbose_name="Kod produktu")
-    stock = models.IntegerField(verbose_name="Dostępność")
+    stock = models.IntegerField(verbose_name="Dostępność", )
     description = models.TextField(verbose_name="Opis")
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Cena")
     image = models.ImageField(
@@ -137,7 +143,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, verbose_name="Produkt"
     )
-    quantity = models.IntegerField(verbose_name="Ilość")
+    quantity = models.IntegerField(verbose_name="Ilość", validators=[MinValueValidator(0)])
     cart = models.ForeignKey(
         ShoppingCart, on_delete=models.CASCADE, verbose_name="Koszyk"
     )

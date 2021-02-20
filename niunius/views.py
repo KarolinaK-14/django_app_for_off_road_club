@@ -161,7 +161,7 @@ class ShopView(View):
         sorted by the date on which added, from the newest to the oldest ones.
         Display not more than first six items from the list.
         """
-        latest_products = Product.objects.all().order_by("-added")[:6]
+        latest_products = Product.objects.exclude(stock=0).order_by("-added")[:6]
         ctx = {"latest_products": latest_products}
         return render(request, "niunius/shop.html", ctx)
 

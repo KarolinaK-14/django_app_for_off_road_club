@@ -10,7 +10,7 @@
         <div class="col">
             <h5>Produkty:</h5>
             <ul>
-            {% for product in car.product_set.all %}
+            {% for product in car.get_available_products %}
                 <li><a href="{% url 'product' product.slug %}">{{ product.name }}</a></li>
             {% endfor %}
             </ul>

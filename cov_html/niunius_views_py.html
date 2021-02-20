@@ -215,7 +215,7 @@
     <p id="t161" class="pln"><span class="n"><a href="#t161">161</a></span><span class="t"><span class="str">        sorted by the date on which added, from the newest to the oldest ones.</span>&nbsp;</span><span class="r"></span></p>
     <p id="t162" class="pln"><span class="n"><a href="#t162">162</a></span><span class="t"><span class="str">        Display not more than first six items from the list.</span>&nbsp;</span><span class="r"></span></p>
     <p id="t163" class="pln"><span class="n"><a href="#t163">163</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p id="t164" class="run"><span class="n"><a href="#t164">164</a></span><span class="t">        <span class="nam">latest_products</span> <span class="op">=</span> <span class="nam">Product</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">all</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">order_by</span><span class="op">(</span><span class="str">"-added"</span><span class="op">)</span><span class="op">[</span><span class="op">:</span><span class="num">6</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t164" class="run"><span class="n"><a href="#t164">164</a></span><span class="t">        <span class="nam">latest_products</span> <span class="op">=</span> <span class="nam">Product</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">exclude</span><span class="op">(</span><span class="nam">stock</span><span class="op">=</span><span class="num">0</span><span class="op">)</span><span class="op">.</span><span class="nam">order_by</span><span class="op">(</span><span class="str">"-added"</span><span class="op">)</span><span class="op">[</span><span class="op">:</span><span class="num">6</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p id="t165" class="run"><span class="n"><a href="#t165">165</a></span><span class="t">        <span class="nam">ctx</span> <span class="op">=</span> <span class="op">{</span><span class="str">"latest_products"</span><span class="op">:</span> <span class="nam">latest_products</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p id="t166" class="run"><span class="n"><a href="#t166">166</a></span><span class="t">        <span class="key">return</span> <span class="nam">render</span><span class="op">(</span><span class="nam">request</span><span class="op">,</span> <span class="str">"niunius/shop.html"</span><span class="op">,</span> <span class="nam">ctx</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t167" class="pln"><span class="n"><a href="#t167">167</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -447,7 +447,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.4</a>,
-            created at 2021-02-19 14:45 +0100
+            created at 2021-02-20 10:55 +0100
         </p>
     </div>
 </div>

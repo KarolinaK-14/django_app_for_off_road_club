@@ -4,7 +4,7 @@
 <div class="col-7 p-2" style="background: lightgray; text-align: center">
     <h3>{{ category.name }}</h3>
     <hr>
-    {% for product in category.product_set.all %}
+    {% for product in category.get_available_products %}
         <p><a href="{% url 'product' product.slug %}">{{ product.name }}</a></p>
     {% endfor %}
 </div>
