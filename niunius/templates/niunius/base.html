@@ -20,19 +20,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% url 'home' as home %}
           {% url 'blog' as blog %}
           {% url 'shop' as shop %}
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">o klubie</a>
+          <a target="_blank" class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">o klubie</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.path == blog %}active{% endif %}" aria-current="page" href="{% url 'blog' %}">wydarzenia</a>
+          <a target="_blank" class="nav-link {% if request.path == blog %}active{% endif %}" aria-current="page" href="{% url 'blog' %}">wydarzenia</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
+          <a target="_blank" class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
+          <a target="_blank" class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
         </li>
       </ul>
 
@@ -63,9 +64,11 @@
 
 <nav class="navbar fixed-bottom navbar-dark bg-dark p-2">
   <div class="container-fluid">
-{#      <audio autoplay loop>#}
-{#          <source src="{% static 'niunius/music/stumblin_in.mp3' %}" type="audio/mpeg">#}
-{#      </audio>#}
+      {% block music %}
+      <audio loop controls>
+          <source src="{% static 'niunius/music/stumblin_in.mp3' %}" type="audio/mpeg">
+      </audio>
+      {% endblock music %}
   </div>
 </nav>
 
