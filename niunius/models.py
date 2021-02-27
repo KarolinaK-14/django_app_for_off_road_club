@@ -1,17 +1,29 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
-from django.urls import reverse
 from django.utils.text import slugify
 
 
 class Article(models.Model):
     title = models.CharField(max_length=128, verbose_name="Tytuł")
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=128)
     content = models.TextField(verbose_name="Treść")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Użytkownik")
+    added_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Dodane przez",
+        related_name="creation",
+    )
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Zmienione przez",
+        null=True,
+        blank=True,
+        related_name="update",
+    )
     added = models.DateTimeField(auto_now_add=True, verbose_name="Dodano")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Zmieniono")
     like = models.IntegerField(default=0, verbose_name="Lubię")
     dislike = models.IntegerField(default=0, verbose_name="Nie lubię")
 
@@ -60,7 +72,7 @@ class ArticleComment(models.Model):
 class Car(models.Model):
     brand = models.CharField(max_length=64, verbose_name="Marka")
     model = models.CharField(max_length=64, unique=True, verbose_name="Model")
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=128)
     image = models.ImageField(
         blank=True, upload_to="niunius/car_img/", verbose_name="Zdjęcie"
     )
@@ -86,7 +98,7 @@ class Car(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, verbose_name="Nazwa")
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=64)
 
     class Meta:
         verbose_name = "Kategoria"
@@ -105,7 +117,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=128, verbose_name="Nazwa")
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=128)
     added = models.DateTimeField(auto_now_add=True, verbose_name="Dodano")
     code = models.CharField(max_length=128, verbose_name="Kod produktu")
     stock = models.IntegerField(verbose_name="Dostępność")
@@ -169,7 +181,19 @@ class CartItem(models.Model):
 class Order(models.Model):
     cart = models.OneToOneField(ShoppingCart, on_delete=models.CASCADE)
     buyer = models.ForeignKey(
-        User, null=True, on_delete=models.CASCADE, verbose_name="Klient"
+        User,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name="Klient - zalogowany użytkownik",
+    )
+    guest_buyer_first_name = models.CharField(
+        max_length=64, null=True, verbose_name="Klient - Gość - imię"
+    )
+    guest_buyer_last_name = models.CharField(
+        max_length=64, null=True, verbose_name="Klient - Gość - nazwisko"
+    )
+    guest_buyer_email = models.EmailField(
+        null=True, verbose_name="Klient - Gość - email"
     )
     address_city = models.CharField(max_length=64, verbose_name="Miasto")
     address_zipcode = models.CharField(
@@ -180,6 +204,19 @@ class Order(models.Model):
     address_street = models.CharField(max_length=64, verbose_name="Ulica")
     address_country = models.CharField(max_length=64, verbose_name="Kraj")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Data zamówienia")
+    delivery = models.CharField(
+        max_length=32,
+        choices=[("Kurier", "Kurier"), ("Odbiór własny", "Odbiór własny")],
+        verbose_name="Sposób dostawy",
+    )
+    payment = models.CharField(
+        max_length=32,
+        choices=[
+            ("Przelew", "Przelew"),
+            ("Płatność przy odbiorze", "Płatność przy odbiorze"),
+        ],
+        verbose_name="Sposób płatności",
+    )
     paid = models.BooleanField(default=False, verbose_name="Zapłacone")
 
     class Meta:
@@ -187,46 +224,26 @@ class Order(models.Model):
         verbose_name_plural = "Zamówienia"
 
     def __str__(self):
-        output = (
-            f"Zamówienie nr: {self.id}, "
-            f"Klient: {self.buyer.first_name} {self.buyer.last_name}"
-        )
+        output = f"Zamówienie nr: {self.id}"
         return output
 
 
 class CarService(models.Model):
-    day = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    notes = models.TextField(blank=True, null=True)
+    """
+    name: name of the car service
+    price: price of the car service
+    time: duration of the car service, in minutes
+    """
+
+    name = models.CharField(max_length=64, verbose_name="Nazwa usługi")
+    price = models.DecimalField(
+        max_digits=8, decimal_places=2, verbose_name="Cena", null=True
+    )
+    time = models.IntegerField(verbose_name="Czas trwania", null=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        verbose_name = "Warsztat"
-        verbose_name_plural = "Warsztat"
-
-    def check_overlap(self, fixed_start, fixed_end, new_start, new_end):
-        overlap = False
-        if new_start == fixed_end or new_end == fixed_start:
-            overlap = False
-        elif (new_start >= fixed_start and new_start <= fixed_end) or (
-                new_end >= fixed_start and new_end <= fixed_end):
-            overlap = True
-        elif new_start <= fixed_start and new_end >= fixed_end:
-            overlap = True
-        return overlap
-
-    def get_absolute_url(self):
-
-        return reverse('calendar')
-
-    def clean(self):
-        if self.end_time <= self.start_time:
-            raise ValidationError("Sprawdź wybrany przedział czasowy. Początek nie może być później niż koniec.")
-
-        visits = CarService.objects.filter(day=self.day)
-        if visits.exists():
-            for visit in visits:
-                if self.check_overlap(visit.start_time, visit.end_time, self.start_time, self.end_time):
-                    raise ValidationError(
-                        'Niestety wystąpiła kolizja z następującą wizytą: ' + str(visit.day) + ', ' + str(
-                            visit.start_time) + '-' + str(visit.end_time))
+        verbose_name = "Warsztat - usługa"
+        verbose_name_plural = "Warsztat - usługi"

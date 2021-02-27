@@ -4,17 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="icon" type="image/png" href="{% static 'niunius/img/favicon.png' %}"/>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/sticky-footer-navbar/">
+    <link rel="stylesheet" href="{% static 'niunius/css/style.css' %}" />
 
-    <title>Niunius</title>
+    <title>Niuniuś</title>
+</head>
 
-{% block navbar %}
-<body style="background-color: grey">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2">
   <div class="container-fluid">
-    <a style="color: darkorange" class="navbar-brand" href="{% url 'home' %}">NIUNIUŚ</a>
+    <a class="navbar-brand" href="{% url 'home' %}">NIUNIUŚ</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -23,54 +25,67 @@
           {% url 'home' as home %}
           {% url 'blog' as blog %}
           {% url 'shop' as shop %}
+          {% url 'contact' as contact %}
         <li class="nav-item">
-          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">o klubie</a>
+          <a class="nav-link {% if request.path == blog %}active{% endif %}" href="{% url 'about' %}">o klubie</a>
         </li>
         <li class="nav-item">
-          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link {% if request.path == blog %}active{% endif %}" aria-current="page" href="{% url 'blog' %}">wydarzenia</a>
+          <a class="nav-link {% if request.path == blog %}active{% endif %}" href="{% url 'blog' %}">blog</a>
         </li>
         <li class="nav-item">
-          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
+          <a class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
         </li>
         <li class="nav-item">
-          <a {% if request.path == home %}target="_blank"{% endif %} class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">warsztat</a>
+          <a class="nav-link {% if request.path == blog %}active{% endif %}" href="{% url 'car-service' %}">warsztat</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == contact %}active{% endif %}" href="{% url 'contact' %}">kontakt</a>
         </li>
       </ul>
 
         {% if request.user.is_superuser%}
-            <a target="_blank" class="btn btn-outline-success" href="{% url 'admin:index' %}">admin</a>
+            <a target="_blank" class="btn btn-outline-warning" href="{% url 'admin:index' %}">admin</a>
         {% endif %}
+    {% block auth %}
         {% if request.user.is_authenticated %}
-            <a class="btn btn-outline-success" href="{% url 'logout' %}">wyloguj się</a>
+            <a class="btn btn-outline-warning" href="{% url 'logout' %}">wyloguj się</a>
         {% else %}
-            <a class="btn btn-outline-success" href="{% url 'login' %}?next={{ request.path }}">zaloguj się</a>
-            <a class="btn btn-outline-success" href="{% url 'signup' %}?next={{ request.path }}">zarejestruj się</a>
+            <a class="btn btn-outline-warning" href="{% url 'login' %}?next={{ request.path }}">zaloguj się</a>
+            <a class="btn btn-outline-warning" href="{% url 'register-user' %}?next={{ request.path }}">zarejestruj się</a>
         {% endif %}
+    {% endblock %}
 
     </div>
   </div>
 </nav>
-{% endblock %}
 
+<section class="p-4">
 {% block content %}
-<div class="text-center mt-5">
-    <h3>Witaj na stronie klubu off-roadowego <span style="color: floralwhite">NIUNIUŚ</span></h3>
-</div>
-<hr>
-<div class="text-center mt-5">
-    <img src="{% static 'niunius/img/car.png' %}" class="img-fluid" alt="logo">
+<div class="text-center">
+    <img src="{% static 'niunius/img/logo.jpg' %}" class="img-fluid" alt="logo">
 </div>
 {% endblock %}
+</section>
 
-<nav class="navbar fixed-bottom navbar-dark bg-dark p-2">
-  <div class="container-fluid">
-      {% block music %}
-      <audio loop controls>
-          <source src="{% static 'niunius/music/song.m4a' %}" type="audio/mpeg">
-      </audio>
-      {% endblock music %}
-  </div>
-</nav>
+<footer class="footer">
+      <div class="container">
+          {% block music %}
+          <!--
+          SURPRISE :-) Congratulations if you are reading this.
+          If you uncomment the below code, you will hear a very special "home-made" piece of music.
+          -->
+          <!--
+          <div>
+            <audio loop controls>
+                <source src="{% static 'niunius/music/song.m4a' %}" type="audio/mpeg">
+            </audio>
+            <small style="color: white">by Niuniuś Band :-)</small>
+          </div>
+          -->
+          {% endblock music %}
+      </div>
+</footer>
+
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -78,5 +93,6 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+    <script src="{% static 'niunius/js/app.js' %}"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 This Django app is the website for the off-road club named "Niuniuś". 
 The website consists of the home page and four subpages: about, blog, shop, and service station.
 Blog and Shop subpages are ready to use, while About and Service Station are in progress and disabled for now.
-![Home Page](niunius/static/niunius/img/readme_home.png)
+![Home Page](niunius/static/niunius/readme/home.png)
 
 In order to explore the project, ***clone this repository*** to your local machine.
 You are very welcome to create pull requests if you find anything should be added/amended/deleted.
@@ -23,7 +23,7 @@ For start, follow the below steps:
 
 ## Blog 
 
-![Blog Page](niunius/static/niunius/img/readme_blog.png)
+![Blog Page](niunius/static/niunius/readme/blog.png)
 
 The Blog subpage display articles. Only an authenticated user can add a new article. 
 After clicking on a title you are redirected to article details. Besides photo and description, there are three buttons:
@@ -31,7 +31,7 @@ comments, like and dislike. Like and Dislike can be used by everyone. As for com
 
 ## Shop
 
-![Shop Page](niunius/static/niunius/img/readme_shop.png)
+![Shop Page](niunius/static/niunius/readme/shop.png)
 
 The shop is for car parts. You can search by car models or by categories, or type whatever you are looking for in the search field.
 Products are assigned to car models and to categories.
@@ -43,5 +43,3 @@ For now the only payment option is a bank transfer.
 
 If you are curious, the app has been tested. All tests passed, and the coverage percentage is 78%.
 You can find tests in the *tests* catalogue. Run them with the command `pytest`. To generate the report, same as below one, use the command `xdg-open cov_html/index.html`
-
-![Test_Coverage](niunius/static/niunius/img/readme_test_cov.png)

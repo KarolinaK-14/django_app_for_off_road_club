@@ -6,8 +6,9 @@ from django.urls import reverse
 import pytest
 from mixer.backend.django import mixer
 
-from niunius import views, forms
-from niunius.models import ArticleComment, CartItem
+from niunius import views
+from niunius.forms import GuestForm
+from niunius.models import CartItem
 
 
 def test_home_view():
@@ -17,9 +18,41 @@ def test_home_view():
 
 
 @pytest.mark.django_db
-def test_home_view_by_logged_user(client, user):
-    client.force_login(user)
-    response = client.get(reverse("home"))
+def test_logout_view(logged_user, client):
+    response = client.get(reverse("logout"))
+    assert response.status_code == 302
+
+
+def test_register_view():
+    request = RequestFactory().get("")
+    response = views.RegisterView.as_view()(request)
+    assert response.status_code == 200
+
+
+def test_register_view_if_missing_form_data(client):
+    form = UserCreationForm(data={})
+    response = client.post(reverse("register-user"))
+    assert form.is_valid() is False
+    assert response.status_code == 200
+
+
+def test_contact_view():
+    request = RequestFactory().get("")
+    response = views.ContactView.as_view()(request)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_car_service_view():
+    request = RequestFactory().get("")
+    response = views.CarServiceView.as_view()(request)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_book_visit_view():
+    request = RequestFactory().get("")
+    response = views.BookVisitView.as_view()(request)
     assert response.status_code == 200
 
 
@@ -31,65 +64,75 @@ def test_blog_view():
 
 
 @pytest.mark.django_db
-def test_blog_view_if_articles_sorted_by_date_added_descending(client, articles):
+def test_blog_view_if_articles_sorted_by_date_descending(client, articles):
     response = client.get(reverse("blog"))
-    assert response.status_code == 200
     assert response.context["articles"][0] == articles[2]
     assert response.context["articles"][1] == articles[1]
     assert response.context["articles"][2] == articles[0]
 
 
 @pytest.mark.django_db
-def test_add_article_view_unauthenticated_user():
-    request = RequestFactory().get("")
-    request.user = AnonymousUser()
-    response = views.ArticleAddView.as_view()(request)
-    assert response.status_code == 302
-
-
-def test_add_article_view_missing_form_data():
-    form = forms.OrderForm(data={})
-    assert form.is_valid() is False
+def test_add_article_view(client, logged_user):
+    response = client.get(reverse("add-article"))
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
-def test_add_comment_view_unauthenticated_user(article):
+def test_add_article_view_if_unauthenticated_user():
     request = RequestFactory().get("")
     request.user = AnonymousUser()
-    response = views.CommentAddView.as_view()(request, pk=article.pk)
+    response = views.AddArticleView.as_view()(request)
     assert response.status_code == 302
 
 
 @pytest.mark.django_db
-def test_add_comment_view_authenticated_user(user, article, client):
-    client.force_login(user)
-    response_get = client.get(reverse("add-comment", kwargs={"pk": article.pk}))
-    assert response_get.status_code == 200
+def test_update_article_view(client, logged_user):
+    article = mixer.blend("niunius.Article")
+    response = client.get(reverse("update-article", kwargs={"pk": article.pk}))
+    assert response.status_code == 200
 
+
+@pytest.mark.django_db
+def test_update_article_view_if_unauthenticated_user():
+    request = RequestFactory().get("")
+    request.user = AnonymousUser()
+    response = views.UpdateArticleView.as_view()(request)
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_add_comment_view(client, logged_user):
+    article = mixer.blend("niunius.Article")
+    response = client.get(reverse("add-comment", kwargs={"pk": article.pk}))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_add_comment_view_if_unauthenticated_user():
+    request = RequestFactory().get("")
+    request.user = AnonymousUser()
+    response = views.AddCommentView.as_view()(request)
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_add_comment_view_if_comment_counter_works(client, logged_user, article):
     data = {"text": "test_text"}
-    count = ArticleComment.objects.count()
-    response_post = client.post(
-        reverse("add-comment", kwargs={"pk": article.pk}), data=data
-    )
-    assert ArticleComment.objects.count() == count + 1
-    assert response_post.status_code == 302
+    count = article.articlecomment_set.count()
+    response = client.post(reverse("add-comment", kwargs={"pk": article.pk}), data=data)
+    assert article.articlecomment_set.count() == count + 1
+    assert response.status_code == 302
 
 
 @pytest.mark.django_db
-def test_article_detail_view(article, client):
+def test_article_detail_view(client):
+    article = mixer.blend("niunius.Article")
     response = client.get(reverse("article-detail", kwargs={"slug": article.slug}))
     assert response.status_code == 200
-    assert response.context["article"].title == article.title
-    assert response.context["article"].slug == article.slug
-    assert response.context["article"].content == article.content
-    assert response.context["article"].user == article.user
-    assert response.context["article"].added == article.added
-    assert response.context["article"].like == article.like
-    assert response.context["article"].dislike == article.dislike
 
 
 @pytest.mark.django_db
-def test_article_detail_view_like_button(article, client):
+def test_article_detail_view_like_button(client, article):
     count_like = article.like
     response = client.post(reverse("article-detail", kwargs={"slug": article.slug}))
     assert response.status_code == 200
@@ -97,7 +140,7 @@ def test_article_detail_view_like_button(article, client):
 
 
 @pytest.mark.django_db
-def test_article_detail_view_dislike_button(article, client):
+def test_article_detail_view_dislike_button(client, article):
     count_dislike = article.dislike
     response = client.post(reverse("article-detail", kwargs={"slug": article.slug}))
     assert response.status_code == 200
@@ -112,22 +155,18 @@ def test_shop_view():
 
 
 @pytest.mark.django_db
-def test_shop_if_products_sorted_by_date_added_descending(client, products):
+def test_shop__view_if_products_sorted_by_date_descending(client, products):
     response = client.get(reverse("shop"))
-    assert response.status_code == 200
     assert response.context["latest_products"][0] == products[2]
     assert response.context["latest_products"][1] == products[1]
     assert response.context["latest_products"][2] == products[0]
 
 
 @pytest.mark.django_db
-def test_car_view(car, client):
+def test_car_view(client):
+    car = mixer.blend("niunius.Car", image="test.gif")
     response = client.get(reverse("car", kwargs={"slug": car.slug}))
     assert response.status_code == 200
-    assert response.context["car"].brand == car.brand
-    assert response.context["car"].model == car.model
-    assert response.context["car"].slug == car.slug
-    assert response.context["car"].image == car.image
 
 
 @pytest.mark.django_db
@@ -137,35 +176,32 @@ def test_car_view_if_no_cars(client):
 
 
 @pytest.mark.django_db
-def test_category_view(category, client):
+def test_category_view(client):
+    category = mixer.blend("niunius.Category")
     response = client.get(reverse("category", kwargs={"slug": category.slug}))
     assert response.status_code == 200
-    assert response.context["category"].name == category.name
-    assert response.context["category"].slug == category.slug
 
 
 @pytest.mark.django_db
-def test_category_view_if_no_category(client):
+def test_category_view_if_no_categories(client):
     response = client.get(reverse("category", kwargs={"slug": "test"}))
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_product_view(product, client):
+def test_product_view(client, product):
     response = client.get(reverse("product", kwargs={"slug": product.slug}))
     assert response.status_code == 200
-    assert response.context["product"].name == product.name
-    assert response.context["product"].slug == product.slug
-    assert response.context["product"].added == product.added
-    assert response.context["product"].code == product.code
-    assert response.context["product"].stock == product.stock
-    assert response.context["product"].description == product.description
-    assert response.context["product"].price == product.price
-    assert response.context["product"].image == product.image
 
 
 @pytest.mark.django_db
-def test_add_product_to_shopping_cart(product, client):
+def test_product_view_if_no_products(client):
+    response = client.get(reverse("product", kwargs={"slug": "test"}))
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_product_view_adding_to_shopping_cart(client, product):
     data = {"qty": 1}
     count = CartItem.objects.count()
     response = client.post(reverse("product", kwargs={"slug": product.slug}), data=data)
@@ -176,34 +212,31 @@ def test_add_product_to_shopping_cart(product, client):
 @pytest.mark.django_db
 def test_delete_item_view(client, product):
     item = mixer.blend("niunius.CartItem", product=product)
+    response = client.post(reverse("delete-item", kwargs={"pk": item.pk}))
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_delete_item_view_if_shopping_cart_items_changed(client, product):
+    item = mixer.blend("niunius.CartItem", product=product)
     count = CartItem.objects.count()
     client.post(reverse("delete-item", kwargs={"pk": item.pk}))
     assert CartItem.objects.count() == count - 1
 
 
 @pytest.mark.django_db
-def test_delete_item_view_redirect_to_shopping_cart(client, product):
-    item = mixer.blend("niunius.CartItem", product=product)
-    response = client.post(reverse("delete-item", kwargs={"pk": item.pk}))
-    assert response.status_code == 302
-    assert "/sklep/koszyk/" in response.url
-
-
-@pytest.mark.django_db
-def test_shopping_cart_view(client):
-    response = client.get(reverse("cart"))
+def test_shopping_cart_view():
+    request = RequestFactory().get("")
+    response = views.ShoppingCartView.as_view()(request)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
-def test_shopping_cart_view_change_item_quantity(product, client):
+def test_shopping_cart_view_changing_item_quantity(client, product):
     cart = mixer.blend("niunius.ShoppingCart")
-    session = client.session
-    session["cart"] = cart.id
-    session.save()
     mixer.blend("niunius.CartItem", cart=cart, product=product)
     data = {"qty": 2, "product": product.id}
-    response = client.post(reverse("cart"), data=data)
+    response = client.post(reverse("shopping-cart"), data=data)
     assert response.status_code == 200
     assert response.context["items"][0].quantity == 2
 
@@ -215,55 +248,71 @@ def test_search_view(client):
 
 
 @pytest.mark.django_db
-def test_search_view_no_matchings_for_query(client):
+def test_search_view_if_car_model_not_found(client):
     response = client.get("/szukaj/?query=test")
-    print(response.context)
     assert len(response.context["cars"]) == 0
 
 
 @pytest.mark.django_db
-def test_search_view_if_matchings_for_query(client):
+def test_search_view_if_car_model_found(client):
     mixer.blend("niunius.Car", model="test", image="test.gif")
     response = client.get("/szukaj/?query=test")
-    print(response.context)
     assert len(response.context["cars"]) == 1
 
 
 @pytest.mark.django_db
-def test_user_creation_view():
-    request = RequestFactory().get("")
-    response = views.UserCreationView.as_view()(request)
-    assert response.status_code == 200
-
-
-def test_user_creation_view_missing_form_data():
-    form = UserCreationForm(data={})
-    assert form.is_valid() is False
-
-
-@pytest.mark.django_db
-def test_order_view_unauthenticated_user():
-    request = RequestFactory().get("")
-    request.user = AnonymousUser()
-    response = views.OrderView.as_view()(request)
-    assert response.status_code == 302
-
-
-def test_order_view_missing_form_data():
-    form = forms.OrderForm(data={})
-    assert form.is_valid() is False
-
-
-@pytest.mark.django_db
-def test_confirmation_view_status_code():
-    order = mixer.blend("niunius.Order")
-    request = RequestFactory().get("", pk=order.pk)
-    response = views.ConfirmationView.as_view()(request, pk=order.pk)
+def test_order_view(client, logged_user):
+    response = client.get(reverse("order"))
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
-def test_confirmation_view_context(client):
-    order = mixer.blend("niunius.Order")
-    response = client.get(reverse("confirmation", kwargs={"pk": order.pk}))
-    assert response.context["order"].address_city == order.address_city
+def test_order_view_if_unauthenticated_user():
+    with pytest.raises(Exception):
+        request = RequestFactory().get("")
+        request.user = AnonymousUser()
+        views.OrderView.as_view()(request)
+
+
+@pytest.mark.django_db
+def tes_guest_order_view(client):
+    response = client.get(reverse("guest-order"))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_guest_order_view_if_missing_form_data(client):
+    form = GuestForm(data={})
+    response = client.post(reverse("guest-order"))
+    assert form.is_valid() is False
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_order_confirmation_view(client, order):
+    response = client.get(reverse("confirm-order", kwargs={"pk": order.pk}))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_order_confirmation_view_if_no_order(client):
+    response = client.get(reverse("confirm-order", kwargs={"pk": 0}))
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_confirmation_view_buyer_in_context(client, order):
+    response = client.get(reverse("confirm-order", kwargs={"pk": order.pk}))
+    assert response.context["order"].buyer == order.buyer or None
+
+
+@pytest.mark.django_db
+def tes_purchase_view(client, order):
+    response = client.get(reverse("purchase", kwargs={"pk": order.pk}))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_purchase_view_if_no_order(client):
+    response = client.get(reverse("purchase", kwargs={"pk": 0}))
+    assert response.status_code == 404

@@ -1,32 +1,26 @@
-"""my_django_project URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from .settings import DEBUG
 from niunius import views as v
+from niunius.admin import admin_site
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", v.HomeView.as_view(), name="home"),
+    path("myadmin/", admin_site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("rejestracja/", v.UserCreationView.as_view(), name="signup"),
+    path("logout/", v.LogoutView.as_view(), name="logout"),
+    path("register/", v.RegisterView.as_view(), name="register-user"),
+    path("", v.HomeView.as_view(), name="home"),
+    path("o-klubie/", v.AboutView.as_view(), name="about"),
+    path("kontakt/", v.ContactView.as_view(), name="contact"),
+    path("warsztat/", v.CarServiceView.as_view(), name="car-service"),
+    path("warsztat-wizyta/", v.BookVisitView.as_view(), name="book-visit"),
     path("blog/", v.BlogView.as_view(), name="blog"),
-    path("blog/dodaj-artykul/", v.ArticleAddView.as_view(), name="add-article"),
+    path("blog/dodaj-artykul/", v.AddArticleView.as_view(), name="add-article"),
+    path(
+        "blog/zmien-artykul/<int:pk>/",
+        v.UpdateArticleView.as_view(),
+        name="update-article",
+    ),
     path(
         "blog/artykul/<slug:slug>/",
         v.ArticleDetailView.as_view(),
@@ -34,29 +28,24 @@ urlpatterns = [
     ),
     path(
         "blog/artykul/<int:pk>/dodaj-komentarz/",
-        v.CommentAddView.as_view(),
+        v.AddCommentView.as_view(),
         name="add-comment",
     ),
     path("sklep/", v.ShopView.as_view(), name="shop"),
     path("sklep/auto/<slug:slug>/", v.CarView.as_view(), name="car"),
     path("sklep/kategoria/<slug:slug>/", v.CategoryView.as_view(), name="category"),
     path("sklep/produkt/<slug:slug>/", v.ProductView.as_view(), name="product"),
-    path("sklep/koszyk/", v.ShoppingCartView.as_view(), name="cart"),
+    path("sklep/koszyk/", v.ShoppingCartView.as_view(), name="shopping-cart"),
     path("sklep/koszyk/usun/<int:pk>/", v.DeleteItemView.as_view(), name="delete-item"),
     path("sklep/zamowienie/", v.OrderView.as_view(), name="order"),
+    path("sklep/zamowienie-gosc/", v.GuestOrderView.as_view(), name="guest-order"),
     path(
         "sklep/potwierdz-zamowienie/<int:pk>/",
-        v.ConfirmationView.as_view(),
-        name="confirmation",
+        v.OrderConfirmationView.as_view(),
+        name="confirm-order",
     ),
+    path("sklep/potwierd-zakup/<int:pk>/", v.PurchaseView.as_view(), name="purchase"),
     path("szukaj/", v.SearchView.as_view(), name="search"),
-    path("calendar/", v.CarServiceView.as_view(), name="calendar"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-if DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns

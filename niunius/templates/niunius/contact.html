@@ -1,0 +1,44 @@
+{% extends "niunius/base.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+        <div class="col-5">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d179447.9523725964!2d87.81934371503715!3d69.42833494632778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x44ac5c403d18ab93%3A0x4024234d8fd6e107!2sNorylsk%2C%20Kraj%20Krasnojarski%2C%20Rosja!5e0!3m2!1spl!2spl!4v1614013427176!5m2!1spl!2spl"
+                width="600" height="450" allowfullscreen="" loading="lazy"></iframe>
+            <br><br>
+            <table>
+                <tr>
+                    <th>Adres:</th>
+                    <td>ul. Klubowa 1, 11-111 Klubowo</td>
+                </tr>
+                <tr>
+                    <th>Telefon:</th>
+                    <td>+48 111 222 333</td>
+                </tr>
+                <tr>
+                    <th>E-mail:</th>
+                    <td>niunius@niunius.com</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-7">
+            <h2>Skontaktuj się z nami</h2><br>
+            <form action="{% url 'contact' %}" method="post">
+                {% csrf_token %}
+                <p> {{ form.message_name }}</p>
+                <p>{{ form.message_email }}</p>
+                <p>{{ form.message }}</p>
+                <input  class="btn btn-warning" type="submit" value="Wyślij">
+            </form>
+            <br>
+            {% if name %}
+            <div class="centered">
+                <h2>Dziękujemy {{ name }}!</h2>
+                <p>Otrzymaliśmy Twoją wiadomość. Wkrótce otrzymasz odpowiedź.</p>
+                <img src="{% static 'niunius/img/promise.png' %}" class="small-img">
+            </div>
+            {% endif %}
+        </div>
+</div>
+{% endblock %}
+{% block music %}{% endblock %}

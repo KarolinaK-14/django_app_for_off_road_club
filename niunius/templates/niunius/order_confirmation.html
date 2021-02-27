@@ -1,0 +1,36 @@
+{% extends "niunius/shop.html" %}
+{% block title-shop %}<h2>Zamówienie #{{ order.pk }} - podsumowanie</h2>{% endblock %}
+{% block content-shop %}
+    <div class="col-7 p-3">
+    <div class="row">
+        <div class="col-5">
+            <div class="row p-3" style="border: solid darkorange">
+
+                <p>{{ order.buyer.first_name }}{{ order.guest_buyer_first_name }}</p>
+                <p>{{ order.buyer.last_name }}{{ order.guest_buyer_last_name }}</p>
+                <p>{{ order.buyer.email }}{{ order.guest_buyer_email }}</p>
+                <hr>
+                <p>{{ order.address_street }}</p>
+                <p>{{ order.address_zipcode }} {{ order.address_city }}</p>
+                <p>{{ order.address_country }}</p>
+                <hr>
+                <p>{{ order.delivery }}</p>
+                <hr>
+                <p>{{ order.payment }}</p>
+            </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-5 p-3" style="border: solid darkorange">
+            <ol>
+                {% for i in items %}
+                <li>{{ i.product.name }} {{ i.quantity }} szt. {{ i.value }} zł</li>
+                {% endfor %}
+            </ol>
+            <br><br>
+            <p>Razem do zapłaty: <strong>{{ order.cart.total }} zł</strong></p>
+        </div>
+    </div>
+    <br>
+    <a style="float: right" class="btn btn-warning" href="{% url 'purchase' order.pk %}">Potwierdź</a>
+    </div>
+{% endblock %}

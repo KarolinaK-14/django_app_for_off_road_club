@@ -1,10 +1,11 @@
 {% extends "niunius/shop.html" %}
-{% block title %}{% endblock %}
+{% block title-shop %}{% endblock %}
 {% block content-shop %}
-<div class="col-7 p-2" style="background: lightgray">
+<div class="col-7 p-3" style="border: solid darkorange; position: relative">
     <h3>{{ car.name }}</h3>
+    <hr>
     <div class="row p-2">
-        <div class="col">
+        <div class="col"  id="image">
             <img class="img-fluid" src="{{ car.image.url }}" alt="car">
         </div>
         <div class="col">

@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.contrib.admin import AdminSite
+from django.contrib.auth.models import User
+
 from .models import (
     Article,
     ArticlePhoto,
@@ -13,6 +16,20 @@ from .models import (
 )
 
 
+class MyAdminSite(AdminSite):
+    site_header = "Niuniuś"
+
+
+admin_site = MyAdminSite(name="myadmin")
+
+admin_site.register(User)
+admin_site.register(ArticlePhoto)
+admin_site.register(ArticleComment)
+admin_site.register(ShoppingCart)
+admin_site.register(CartItem)
+admin_site.register(CarService)
+
+
 class ArticlePhotoInLine(admin.TabularInline):
     model = ArticlePhoto
 
@@ -21,52 +38,27 @@ class ArticleCommentInLine(admin.TabularInline):
     model = ArticleComment
 
 
-@admin.register(Article)
+@admin.register(Article, site=admin_site)
 class ArticleAdmin(admin.ModelAdmin):
     inlines = [ArticlePhotoInLine, ArticleCommentInLine]
     exclude = ["slug"]
 
 
-@admin.register(ArticlePhoto)
-class ArticlePhotoAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(ArticleComment)
-class ArticleCommentAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Car)
+@admin.register(Car, site=admin_site)
 class CarAdmin(admin.ModelAdmin):
     exclude = ["slug"]
 
 
-@admin.register(Category)
+@admin.register(Category, site=admin_site)
 class CategoryAdmin(admin.ModelAdmin):
     exclude = ["slug"]
 
 
-@admin.register(Product)
+@admin.register(Product, site=admin_site)
 class ProductAdmin(admin.ModelAdmin):
     exclude = ["slug"]
 
 
-@admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(CartItem)
-class CartItemAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Order)
+@admin.register(Order, site=admin_site)
 class OrderAdmin(admin.ModelAdmin):
     exclude = ["cart"]
-
-
-@admin.register(CarService)
-class CarServiceAdmin(admin.ModelAdmin):
-    pass
