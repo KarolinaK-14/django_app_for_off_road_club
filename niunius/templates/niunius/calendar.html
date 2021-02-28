@@ -1,0 +1,22 @@
+{% extends "niunius/base.html" %}
+{% load static %}
+{% block content %}
+<h1 style="color: red">Cześć {{ name }}! Wydarzenia dla {{ month }} {{ year }}!</h1>
+<p>As of {{ time }}</p>
+{{ cal }}
+{{ cal|safe }}
+    <br><br>
+<table>
+<tr>
+    <td>cos</td>
+    <td>tam</td>
+</tr>
+<tr>
+    <td>foo</td>
+    <td>bar</td>
+</tr>
+</table>
+    <br><br>
+<p>Copyright (c) {{ current_year }}</p>
+{% endblock content%}
+{% block music %}{% endblock %}

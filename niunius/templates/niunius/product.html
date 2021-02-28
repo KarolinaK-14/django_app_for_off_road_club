@@ -1,15 +1,16 @@
 {% extends "niunius/shop.html" %}
-{% block title %}{% endblock %}
+{% block title-shop %}{% endblock %}
 {% block content-shop %}
 <style>
     input[type=number]::-webkit-inner-spin-button {
     opacity: 1
     }
 </style>
-<div class="col-7 p-2" style="background: lightgray">
-    <h4>{{ product.name }}</h4>
+<div class="col-7 p-3" style="border: solid darkorange; position: relative">
+    <h3>{{ product.name }}</h3>
+    <hr>
     <div class="row p-2">
-        <div class="col"><img class="img-fluid" src="{{ product.image.url }}" alt="product"></div>
+        <div class="col" id="image"><img class="img-fluid" src="{{ product.image.url }}" alt="product"></div>
         <div class="col">
             <p>Kod produktu: {{ product.code }}</p>
             <p>Cena: {{ product.price }} zł</p>
@@ -19,14 +20,18 @@
                 <input style="width: 46px; height: 27px" type="number" step="1" min="1" max="{{ product.stock }}" name="qty" value="1">
                 <input type="submit" value="Dodaj do koszyka">
             </form>
+            <br><br>
+
+            <h5>Opis:</h5>
+                <p> {{ product.description }}</p>
+
+            <h5>Pasuje do:</h5>
+                <ul>
+                {% for car in product.cars.all %}
+                    <li><a href="{% url 'car' car.slug %}">{{ car.name }}</a></li>
+                {% endfor %}
+                </ul>
         </div>
     </div>
-    <p> {{ product.description }}</p>
-    <h5>Pasuje do:</h5>
-    <ul>
-    {% for car in product.cars.all %}
-        <li><a href="{% url 'car' car.slug %}">{{ car.name }}</a></li>
-    {% endfor %}
-    </ul>
 </div>
 {% endblock  %}

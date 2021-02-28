@@ -1,0 +1,57 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+    <h2>Edytuj artykuł</h2>
+<form action="" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="card">
+  <div class="card-header">
+      <strong>{{ form.title }}</strong>
+  </div>
+  <div class="card-body">
+    <div class="row">
+        <div class="col">
+            <p class="card-text">{{ form.content }}</p>
+        </div>
+        <div class="col">
+            <table>
+                <tr class="row">
+                    {{ form.photos }}
+                    {% for articlephoto in article.articlephoto_set.all %}
+                    <td class="col-6" id="image">
+                        <img class="small-img" src="{{ articlephoto.photo.url }}" alt="photo">
+                    </td>
+                    {% empty %}
+                    {% endfor %}
+                </tr>
+            </table>
+        <br>
+            <div>
+                <label for="id_photos" class="btn btn-warning">dodaj zdjęcia</label>
+                <span id="files-count"></span><span>  </span><span id="files-text"></span>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+    <input class="btn btn-warning" style="" type="submit" value="zapisz">
+
+</form>
+
+    <script>
+    files_text=document.getElementById("files-text")
+    files_count=document.getElementById("files-count")
+    document.getElementById("id_photos").addEventListener("change", function() {
+        files_count.innerHTML=this.files.length
+        if (this.files.length === 1) {
+            files_text.innerText = "plik"
+        } else if (this.files.length === 2 || this.files.length === 3 || this.files.length === 4) {
+            files_text.innerText = "pliki"
+        } else {
+            files_text.innerText = "plików"
+        }
+    });
+    </script>
+
+{% endblock %}
+{% block music %}{% endblock %}

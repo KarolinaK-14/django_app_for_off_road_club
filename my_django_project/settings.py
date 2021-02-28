@@ -38,9 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'niunius',
-    'django_extensions',
-    'werkzeug',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -51,7 +48,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'my_django_project.urls'
@@ -117,9 +113,17 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
+
+# EMAIL SETTINGS
+# To check sent messages run the following command in the terminal:
+# python -m smtpd -n -c DebuggingServer localhost:1025
+# TODO: In the production version, below details need to be replaced by ones appropriate for a chosen email provider.
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
 
 
 try:

@@ -1,0 +1,29 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+    <a class="btn btn-warning" href="{% url 'book-visit' %}">Umów wizytę w warsztacie</a>
+    <br><br>
+    <h2>Warsztat samochodowy - nasza oferta</h2>
+    <br><br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Usługa</th>
+          <th scope="col">Cena</th>
+          <th scope="col">Czas trwania</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for service in services %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ service.name }}</td>
+          <td>{{ service.price }} zł</td>
+          <td>{{ service.time }} h</td>
+        </tr>
+      {% endfor %}
+    <tr>
+  </tbody>
+</table>
+{% endblock content%}
+{% block music %}{% endblock %}

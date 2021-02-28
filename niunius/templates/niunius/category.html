@@ -1,11 +1,11 @@
 {% extends "niunius/shop.html" %}
-{% block title %}{% endblock %}
+{% block title-shop %}{% endblock %}
 {% block content-shop %}
-<div class="col-7 p-2" style="background: lightgray; text-align: center">
+    <div class="col-7 p-3" style="border: solid darkorange; position: relative">
     <h3>{{ category.name }}</h3>
     <hr>
     {% for product in category.get_available_products %}
         <p><a href="{% url 'product' product.slug %}">{{ product.name }}</a></p>
     {% endfor %}
-</div>
+    </div>
 {% endblock %}

@@ -1,14 +1,44 @@
 {% extends "niunius/shop.html" %}
-{% block title %}<h3>Zamówienie {{ order.pk }}</h3>{% endblock %}
+{% block title-shop %}{% endblock %}
 {% block content-shop %}
-    <div class="col-7 p-2" style="background: lightgray; position: relative">
-        <form method="post">
-            {% csrf_token %}
-            <h4>Dane kupującego</h4>
-            {{ buyer_form.as_p }}
-            <h4>Adres dostawy</h4>
-            {{ form.as_p }}
-            <input class="btn btn-warning" type="submit" value="Zamawiam">
+    <div class="col-7">
+        <form method="post">{% csrf_token %}
+        <div class="row">
+            <div class="col-5">
+                <div class="row p-3" style="border: solid darkorange">
+                    <h4>Dane kupującego</h4>
+                    {% for field in buyer_form %}
+                    {{ field.label }}
+                    {{ field }}
+                        <br>
+                    {% endfor %}
+                </div>
+                <br>
+                <div class="row p-3" style="border: solid darkorange">
+                    <h4>Adres dostawy</h4>
+                    {% for field in form %}
+                    {{ field.label }}
+                    {{ field }}
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-5">
+                <div class="row p-3" style="border: solid darkorange">
+                    <h4>Sposób dostawy</h4>
+                    {{ delivery_form.as_p }}
+                </div>
+                <br>
+                <div class="row p-3" style="border: solid darkorange">
+                    <h4>Sposób płatności</h4>
+                    {{ payment_form.as_p }}
+                </div>
+            </div>
+
+        </div>
+            <input  style="float: right" class="btn btn-warning" type="submit" value="Przejdź do podsumowania">
         </form>
     </div>
+
 {% endblock %}

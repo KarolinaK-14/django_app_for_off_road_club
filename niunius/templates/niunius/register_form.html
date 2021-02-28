@@ -1,0 +1,22 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+    <div class="row">
+    <div class="col-3 container"></div>
+    <div class="col-6 container">
+    <h2>Zarejestruj się</h2><hr>
+    <form action="" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            <small class="small-text">{{ field.help_text }}</small>
+        </p>
+    {% endfor %}
+    <input class="btn btn-warning" type="submit" value="zapisz">
+    </form>
+    </div>
+    <div class="col-3 container"></div>
+    </div>
+{% endblock %}
+{% block music %}{% endblock %}

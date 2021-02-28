@@ -1,18 +1,37 @@
 {% extends "niunius/base.html" %}
+{% load static %}
 {% block content %}
-<div class="container">
-<div class="row p-2">
-    <h4 style="text-align: center">{{ article.title }}</h4>
+<div class="card">
+  <div class="card-header">
+      <strong>{{ article.title }}</strong>
+      <a style="float: right" class="btn btn-secondary" href="{% url 'update-article' article.pk %}">edytuj</a>
+  </div>
+  <div class="card-body">
+    <div class="row">
+        <div class="col">
+            <p class="card-text">{{ article.content }}</p>
+        </div>
+        <div class="col">
+            <table>
+                <tr class="row">
+                    {% for articlephoto in article.articlephoto_set.all %}
+                    <td class="col-6" id="image">
+                        <img class="img-fluid img-thumbnail" src="{{ articlephoto.photo.url }}" alt="photo">
+                    </td>
+                    {% empty %}
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+  </div>
 </div>
-<div class="row">
-    <div class="col"><p>{{ article.content }}</p></div>
-    <div class="col"><img class="img-fluid" src="{{ article.articlephoto_set.all.0.photo.url }}" alt="photo"></div>
-</div>
+
 <div class="row">
     <button type="button" class="col-2 btn btn-dark" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
         Komentarze ({{ comments_count }})
     </button>
-    <a class="col-1 btn btn-secondary" href="{% url 'add-comment' article.pk %}?next={{ request.path }}">dodaj</a>
+    <a class="col-1 btn btn-warning" href="{% url 'add-comment' article.pk %}?next={{ request.path }}">dodaj</a>
     <form class="col-2" action="" method="post">
         {% csrf_token %}
         <button name="like" type="submit" class="btn btn-success">&#128077; ({{ article.like }})</button>
@@ -28,6 +47,6 @@
         {%  endfor %}
     </div>
 </div>
-</div>
+
 {% endblock %}
 {% block music %}{% endblock %}

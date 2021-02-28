@@ -1,0 +1,35 @@
+{% extends "niunius/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="row">
+    <div class="col-1"></div>
+    <div class="col">
+        <h2>Umów wizytę w warsztacie</h2>
+        <br>
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-warning" type="submit" value="wyślij">
+    </form>
+    </div>
+    <div class="col">
+    {% if client_name %}
+        <div class="card" style="width: 36rem; border-color: darkgray">
+        <div class="card-body">
+            <h2>Dziękujemy {{ client_name|capfirst }} &#10084</h2>
+            <br>
+            <p>Otrzymaliśmy Twoją rezerwację. Niedługo się odezwiemy w celu omówienia szczegółów i potwierdzenia Twojej wizyty.</p>
+            <br>
+            <h4>Do zobaczenia!</h4>
+        </div>
+        </div>
+    {% else %}
+        <div class="text-center mt-5 blog-img" id="image">
+            <img src="{% static 'niunius/img/car_service.jpg' %}" class="img-fluid" alt="car service">
+        </div>
+    {% endif %}
+    </div>
+    <div class="col-1"></div>
+    </div>
+{% endblock content%}
+{% block music %}{% endblock %}
