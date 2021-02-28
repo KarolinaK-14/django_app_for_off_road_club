@@ -46,7 +46,7 @@
 <div class="col-7">
     <div id="carouselExampleControls" class="carousel slide carousel-fade" data-ride="carousel">
         <div class="carousel-inner">
-        {% for article in articles %}
+        {% for article in carousel_articles %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                 <div class="container" style="text-align: center">
                     <h5><a href="{% url 'article-detail' article.slug %}">{{ article.title }}</a></h5>

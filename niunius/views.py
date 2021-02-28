@@ -39,13 +39,23 @@ from .models import (
 
 
 class HomeView(TemplateView):
-    """Display the home page."""
+    """
+    Display the home page - the club logo and the navbar with links leading to subpages.
+
+    There is one more thing that may additionally appear on this page. Only the code for it needs to be uncommented.
+    Go through all the files and find it :-)
+    """
 
     template_name = "niunius/base.html"
 
 
 class LogoutView(View):
-    """Log out the user and redirect directly to the home page."""
+    """
+    Log out the user and redirect straight to the home page.
+
+    This view is to replace the default auth.LogoutView
+    that displays the 'You are logged out' message which is not desired in the "niunius" app.
+    """
 
     def get(self, request):
         logout(request)
@@ -53,16 +63,18 @@ class LogoutView(View):
 
 
 class RegisterView(View):
-    """
-    Display the user creation form.
-    If the form filled out correctly, create, authenticate and log in the new user.
-    """
+    """New user creation"""
 
     def get(self, request):
+        """Display the empty register form."""
         form = RegisterForm()
         return render(request, "niunius/register_form.html", {"form": form})
 
     def post(self, request):
+        """
+        If the form is correctly completed, then create a new user.
+        Once created, log the user in.
+        """
         form = RegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
@@ -87,18 +99,30 @@ class RegisterView(View):
         return render(request, "niunius/register_form.html", {"form": form})
 
 
-class ContactView(View):
-    """
-    Display the contact page with the message form.
-    The form is for sending an email message.
-    Check my_django_project/settings.py file for email settings.
-    """
+class AboutView(View):
+    """Display one specific Article object - information about the club."""
 
     def get(self, request):
+        article = get_object_or_404(Article, slug="o-klubie")
+        return render(request, "niunius/about.html", {"article": article})
+
+
+class ContactView(View):
+    """Page with contact details and the message form if users want to contact us."""
+
+    def get(self, request):
+        """
+        Display the contact page with the map, the address
+        and the empty message form.
+        """
         form = MessageForm()
         return render(request, "niunius/contact.html", {"form": form})
 
     def post(self, request):
+        """
+        If the form is correctly completed, send an e-mail message from the user to the club e-mail address.
+        Check my_django_project/settings.py file for email settings.
+        """
         form = MessageForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data["message_name"]
@@ -108,16 +132,13 @@ class ContactView(View):
                 form.cleaned_data["message_email"],  # from
                 ["niunius@niunius.com"],  # to
             )
-            form = MessageForm()
+            form = MessageForm()  # once message sent, clear the form
             return render(request, "niunius/contact.html", {"form": form, "name": name})
         return render(request, "niunius/contact.html", {"form": form})
 
 
 class CarServiceView(View):
-    """
-    Display the list of services with details.
-    And the button linked to the page with the form to book the visit.
-    """
+    """Display the table with car services offered by the club."""
 
     def get(self, request):
         services = CarService.objects.all()
@@ -126,28 +147,38 @@ class CarServiceView(View):
 
 class BookVisitView(View):
     """
-    Display the form to book a visit.
-    Booking means sending an email.
-    Check my_django_project/settings.py file for email settings.
+    In order to book a visit to the car service station,
+    users send their preferences via e-email.
+    The site administrator checks if the chosen date and time are available
+    and reply to the client.
     """
 
     def get(self, request):
+        """Display the empty visit form."""
         form = VisitForm()
         return render(request, "niunius/book_visit.html", {"form": form})
 
     def post(self, request):
+        """
+        If the form is correctly completed,
+        then send via e-mail visit details to the club e-mail address.
+
+        Check my_django_project/settings.py file for email settings.
+        """
         form = VisitForm(request.POST)
         if form.is_valid():
             client_name = form.cleaned_data["client_name"]
             client_email = form.cleaned_data["client_email"]
             client_phone = form.cleaned_data["client_phone"]
             service = form.cleaned_data["service"].name
-            day = int(form.cleaned_data["visit_date"].day)
+            day = form.cleaned_data["visit_date"].day
             month = int(form.cleaned_data["visit_date"].month)
-            year = int(form.cleaned_data["visit_date"].year)
+            year = form.cleaned_data["visit_date"].year
+            visit_time = form.cleaned_data["visit_time"]
+
             locale.setlocale(locale.LC_ALL, "pl_PL.utf8")
             visit_date = f"{day} {calendar.month_name[month]} {year}"
-            visit_time = form.cleaned_data["visit_time"]
+
             msg_title = f"{client_name} - {service}"
             msg_body = (
                 f"{client_name}, tel. {client_phone}, usługa: {service},"
@@ -159,65 +190,62 @@ class BookVisitView(View):
                 client_email,  # from
                 ["niunius@niunius.com"],  # to
             )
-            form = VisitForm()
-            return render(
-                request,
-                "niunius/book_visit.html",
-                {
-                    "form": form,
-                    "client_name": client_name,
-                    "client_email": client_email,
-                    "client_phone": client_phone,
-                    "service": service,
-                    "visit_date": visit_date,
-                    "visit_time": visit_time,
-                },
-            )
+            form = VisitForm()  # once message sent, clear the form
+            ctx = {
+                "form": form,
+                "client_name": client_name,
+                "client_email": client_email,
+                "client_phone": client_phone,
+                "service": service,
+                "visit_date": visit_date,
+                "visit_time": visit_time,
+            }
+            return render(request, "niunius/book_visit.html", ctx)
         return render(request, "niunius/book_visit.html", {"form": form})
-
-
-class AboutView(View):
-    def get(self, request):
-        article = Article.objects.get(slug="o-klubie")
-        return render(request, "niunius/about.html", {"article": article})
 
 
 class BlogView(View):
     """
-    Get the list of articles,
-    sorted by the date on which added, from the newest to the oldest ones.
-    Display not more than 10 articles per one page.
+    Get the list of articles, excluding the article displayed in the AboutView.
+    The page is divided in two parts.
+    The part on the left shows the list of articles titles,
+    sorted by the date on which added, from the newest to the oldest ones,
+    not more than 10 articles per one page.
+    The part on the right displays on the carousel photos of the three latest articles.
     """
 
     def get(self, request):
-        articles = Article.objects.exclude(title="o-klubie").order_by("-added")
+        articles = Article.objects.exclude(slug="o-klubie").order_by("-added")
         paginator = Paginator(articles, 10)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
-        ctx = {"articles": articles, "page_obj": page_obj}
+        carousel_articles = articles[:4]
+        ctx = {
+            "articles": articles,
+            "page_obj": page_obj,
+            "carousel_articles": carousel_articles,
+        }
         return render(request, "niunius/blog.html", ctx)
 
 
 class AddArticleView(LoginRequiredMixin, View):
-    """
-    Give access only to logged in users.
-    If a user is not logged in redirect to the login page.
-    """
+    """Add a new article to the blog page. Only for logged users."""
 
     login_url = reverse_lazy("login")
 
     def get(self, request):
-        """Display the empty form for adding a new article."""
+        """Display the empty article form."""
         form = ArticleForm()
         return render(request, "niunius/article_form.html", {"form": form})
 
     def post(self, request):
         """
-        Add to the database new Article object and related to it ArticlePhoto objects.
-        If added successfully, redirect to the main blog page.
+        If the form is correctly completed
+        (title and content fields are required, photos optional),
+        create new Article object
+        and related to it ArticlePhoto objects (if any photos added in the form).
         """
         form = ArticleForm(request.POST, request.FILES)
-
         if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
@@ -227,22 +255,26 @@ class AddArticleView(LoginRequiredMixin, View):
             for photo in request.FILES.getlist("photos"):
                 ArticlePhoto.objects.create(photo=photo, article=article)
             return redirect("blog")
-
         return render(request, "niunius/article_form.html", {"form": form})
 
 
 class UpdateArticleView(LoginRequiredMixin, View):
+    """
+    Edit a given article. Only for logged users.
+    User who want to edit the article may be different from the user who has created this article.
+    """
+
     login_url = reverse_lazy("login")
 
     def get(self, request, pk):
+        """Display the article form with fields filled in with the details of the given article."""
         article = get_object_or_404(Article, pk=pk)
-        ctx = {
-            "article": article,
-            "form": ArticleForm({"title": article.title, "content": article.content}),
-        }
+        form = ArticleForm({"title": article.title, "content": article.content})
+        ctx = {"article": article, "form": form}
         return render(request, "niunius/article_update.html", ctx)
 
     def post(self, request, pk):
+        """Save changes to the given article."""
         form = ArticleForm(request.POST, request.FILES)
         article = get_object_or_404(Article, pk=pk)
         if form.is_valid():
@@ -255,23 +287,58 @@ class UpdateArticleView(LoginRequiredMixin, View):
             for photo in request.FILES.getlist("photos"):
                 ArticlePhoto.objects.create(photo=photo, article=article)
             return redirect("article-detail", article.slug)
-
         return render(request, "niunius/article_update.html", {"form": form})
 
 
+class ArticleDetailView(View):
+    """
+    Page with the article details and with functionalities to add comments, like or dislike the article.
+    Any user can click 'like' and 'dislike' buttons. Adding comments only for logged in users.
+    """
+
+    def get(self, request, slug):
+        """Display details of the given article."""
+        article = get_object_or_404(Article, slug=slug)
+        comments = article.articlecomment_set.all().order_by("-added")
+        ctx = {
+            "article": article,
+            "comments": comments,
+            "comments_count": comments.count(),
+            "form": ArticleCommentForm(),
+        }
+        return render(request, "niunius/article_detail.html", ctx)
+
+    def post(self, request, slug):
+        """If new values provided, update 'like' or 'dislike' numbers of the given article."""
+        article = get_object_or_404(Article, slug=slug)
+        comments = article.articlecomment_set.all().order_by("-added")
+        comments_count = comments.count()
+
+        if "like" in request.POST:
+            article.like = F("like") + 1
+            article.save()
+            return redirect("article-detail", article.slug)
+
+        if "dislike" in request.POST:
+            article.dislike = F("dislike") + 1
+            article.save()
+            return redirect("article-detail", article.slug)
+
+        ctx = {
+            "article": article,
+            "comments": comments,
+            "comments_count": comments_count,
+        }
+        return render(request, "niunius/article_detail.html", ctx)
+
+
 class AddCommentView(LoginRequiredMixin, View):
-    """
-    Give access only to logged in users.
-    If a user is not logged in redirect to the login page.
-    """
+    """Add a comment to the given article. Only for logged users."""
 
     login_url = reverse_lazy("login")
 
     def get(self, request, pk):
-        """
-        Return the page with an empty form
-        for adding a new comment to the given article.
-        """
+        """Display the empty comment form."""
         ctx = {
             "article": get_object_or_404(Article, pk=pk),
             "form": ArticleCommentForm(),
@@ -279,11 +346,7 @@ class AddCommentView(LoginRequiredMixin, View):
         return render(request, "niunius/article_comment_form.html", ctx)
 
     def post(self, request, pk):
-        """
-        Add to the given article new ArticleComment object.
-        If added successfully, redirect to the page with article details.
-        Otherwise, return the page with an empty form.
-        """
+        """If the form is correctly completed, create new ArticleComment object."""
         form = ArticleCommentForm(request.POST)
         article = get_object_or_404(Article, pk=pk)
         if form.is_valid():
@@ -293,135 +356,25 @@ class AddCommentView(LoginRequiredMixin, View):
         return redirect("add-comment", {"form": form, "article": article})
 
 
-class ArticleDetailView(View):
-    def get(self, request, slug):
-        """Get details of the given article."""
-        article = get_object_or_404(Article, slug=slug)
-        comments = article.articlecomment_set.all().order_by("-added")
-        ctx = {
-            "article": article,
-            "comments": comments,
-            "comments_count": comments.count(),
-            "form": ArticleCommentForm(),
-        }
-
-        return render(request, "niunius/article_detail.html", ctx)
-
-    def post(self, request, slug):
-        """
-        If new values given,
-        update 'like' or 'dislike' field of the given Article object.
-        """
-        article = get_object_or_404(Article, slug=slug)
-        comments = article.articlecomment_set.all().order_by("-added")
-        comments_count = comments.count()
-
-        if "like" in request.POST:
-            article.like = F("like") + 1
-            article.save()
-            return redirect("article-detail", article.slug)
-        if "dislike" in request.POST:
-            article.dislike = F("dislike") + 1
-            article.save()
-            return redirect("article-detail", article.slug)
-        ctx = {
-            "article": article,
-            "comments": comments,
-            "comments_count": comments_count,
-        }
-        return render(request, "niunius/article_detail.html", ctx)
-
-
 class ShopView(View):
+    """
+    List categories and car models on the left sidebar.
+    Also display images of products recently added to the store.
+    Skip products with stock equal to 0.
+    """
+
     def get(self, request):
-        ctx = {
-            "latest_products": Product.objects.exclude(stock=0).order_by("-added")[:6]
-        }
-        return render(request, "niunius/shop.html", ctx)
-
-
-class CarView(View):
-    def get(self, request, slug):
-        """Get details of the given car."""
-        car = get_object_or_404(Car, slug=slug)
-        ctx = {"car": car}
-        return render(request, "niunius/car.html", ctx)
-
-
-class CategoryView(View):
-    def get(self, request, slug):
-        """Get details of the given category."""
-        category = get_object_or_404(Category, slug=slug)
-        ctx = {"category": category}
-        return render(request, "niunius/category.html", ctx)
-
-
-class ProductView(View):
-    def get(self, request, slug):
-        """Get details of the given product."""
-        product = get_object_or_404(Product, slug=slug)
-        ctx = {"product": product}
-        return render(request, "niunius/product.html", ctx)
-
-    def post(self, request, slug):
-        product = Product.objects.get(slug=slug)
-        qty = int(request.POST.get("qty"))
-        try:
-            cart = ShoppingCart.objects.get(is_ordered=False)
-        except ShoppingCart.DoesNotExist:
-            new_cart = ShoppingCart.objects.create()
-            CartItem.objects.create(product=product, quantity=qty, cart=new_cart)
-            return redirect("shopping-cart")
-
-        try:
-            item = cart.cartitem_set.get(product_id=product.pk)
-        except CartItem.DoesNotExist:
-            CartItem.objects.create(product=product, quantity=qty, cart=cart)
-            return redirect("shopping-cart")
-        item.quantity += qty
-        item.save()
-        cart.cartitem_set.get(product_id=product.pk).quantity += qty
-        cart.cartitem_set.get(product_id=product.pk).save()
-        return redirect("shopping-cart")
-
-
-class DeleteItemView(View):
-    def post(self, request, pk):
-        """Delete the given item from the shopping cart."""
-        item_to_delete = CartItem.objects.get(pk=pk)
-        item_to_delete.delete()
-        return redirect("shopping-cart")
-
-
-class ShoppingCartView(View):
-    def get(self, request):
-        try:
-            cart = ShoppingCart.objects.get(is_ordered=False)
-        except ShoppingCart.DoesNotExist:
-            return render(request, "niunius/shopping_cart.html")
-        items = cart.cartitem_set.all().order_by("pk")
-        total = cart.total()
-        ctx = {"items": items, "total": total}
-        return render(request, "niunius/shopping_cart.html", ctx)
-
-    def post(self, request):
-        cart = ShoppingCart.objects.get(is_ordered=False)
-        items = cart.cartitem_set.all().order_by("pk")
-        qty = int(request.POST.get("qty"))
-        product = request.POST.get("product")
-        item = cart.cartitem_set.get(product=product)
-        item.quantity = qty
-        item.save()
-        total = cart.total()
-        ctx = {"items": items, "total": total}
-        return render(request, "niunius/shopping_cart.html", ctx)
+        latest_products = Product.objects.exclude(stock=0).order_by("-added")[:6]
+        return render(
+            request, "niunius/shop.html", {"latest_products": latest_products}
+        )
 
 
 class SearchView(ListView):
     """
-    Search for given query among Category names,
-    Product names and codes, and Car models.
+    Search for given query among Category names, Product names and codes, and Car models.
     Display the results.
+    As for products in the results, show only available ones, skip those with stock equal to 0.
     """
 
     template_name = "niunius/search_results.html"
@@ -434,16 +387,158 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         query = self.request.GET.get("query")
         context = super(SearchView, self).get_context_data(**kwargs)
-        context["search_product"] = Product.objects.filter(
+        products = Product.objects.filter(
             name__icontains=query
         ) | Product.objects.filter(code__icontains=query)
+        context["search_product"] = products.exclude(stock=0)
         context["search_car"] = Car.objects.filter(model__icontains=query)
         return context
 
 
-class OrderView(View):
-    def get(self, request):
+class CarView(View):
+    """
+    Display details of the given car.
+    As for products related to the car, show only available ones, skip those with stock equal to 0.
+    """
 
+    def get(self, request, slug):
+        car = get_object_or_404(Car, slug=slug)
+        ctx = {"car": car}
+        return render(request, "niunius/car.html", ctx)
+
+
+class CategoryView(View):
+    """
+    Display details of the given category.
+    As for products related to the car, show only available ones, skip those with stock equal to 0.
+    """
+
+    def get(self, request, slug):
+        category = get_object_or_404(Category, slug=slug)
+        ctx = {"category": category}
+        return render(request, "niunius/category.html", ctx)
+
+
+class ProductView(View):
+    """Product details page with functionality of adding the product to the shopping cart."""
+
+    def get(self, request, slug):
+        """Display details of the given product."""
+        product = get_object_or_404(Product, slug=slug)
+        return render(request, "niunius/product.html", {"product": product})
+
+    def post(self, request, slug):
+        """
+        All users can add the product to the shopping cart.
+        However, it is handled differently for logged and not logged in users.
+
+        For anonymous users, the given shopping cart is available and editable only in the session.
+        For logged users, once the shopping cart is created (creation is when the first item is added to the cart),
+        the cart is saved and is editable at any time, if the user logged in, till the order is placed.
+        """
+        product = Product.objects.get(slug=slug)
+        qty = int(request.POST.get("qty"))
+
+        if request.user.is_authenticated:
+            try:
+                cart = ShoppingCart.objects.get(is_ordered=False)
+            except ShoppingCart.DoesNotExist:
+                new_cart = ShoppingCart.objects.create(is_ordered=False)
+                CartItem.objects.create(product=product, quantity=qty, cart=new_cart)
+                return redirect("shopping-cart")
+            try:
+                item = cart.cartitem_set.get(product_id=product.pk)
+            except CartItem.DoesNotExist:
+                CartItem.objects.create(product=product, quantity=qty, cart=cart)
+                return redirect("shopping-cart")
+
+        else:
+            if "cart" not in request.session:
+                new_cart = ShoppingCart.objects.create()
+                request.session["cart"] = new_cart.id
+                CartItem.objects.create(product=product, quantity=qty, cart=new_cart)
+                return redirect("shopping-cart")
+            else:
+                cart = ShoppingCart.objects.get(pk=request.session["cart"])
+                try:
+                    item = cart.cartitem_set.get(product_id=product.pk)
+                except CartItem.DoesNotExist:
+                    CartItem.objects.create(product=product, quantity=qty, cart=cart)
+                    return redirect("shopping-cart")
+
+        item.quantity += qty
+        item.save()
+        cart.cartitem_set.get(product_id=product.pk).quantity += qty
+        cart.cartitem_set.get(product_id=product.pk).save()
+        return redirect("shopping-cart")
+
+
+class ShoppingCartView(View):
+    """
+    Shopping cart with added items.
+    Previously chosen item quantity may be changed in this view and all values will be recalculated accordingly.
+
+    For anonymous users, the given shopping cart is available and editable only in the session.
+    For logged users, once the shopping cart is created (creation is when the first item is added to the cart),
+    the cart is saved and is editable at any time, if the user logged in, till the order is placed.
+    """
+
+    def get(self, request):
+        """Display the shopping cart with all added items."""
+        try:
+            if request.user.is_authenticated:
+                cart = ShoppingCart.objects.get(is_ordered=False)
+            else:
+                cart = ShoppingCart.objects.get(pk=request.session.get("cart"))
+        except ShoppingCart.DoesNotExist:
+            return render(request, "niunius/shopping_cart.html")
+        items = cart.cartitem_set.all().order_by("pk")
+        total = cart.total()
+        ctx = {"items": items, "total": total}
+        return render(request, "niunius/shopping_cart.html", ctx)
+
+    def post(self, request):
+        """
+        If the quantity is changed for a given cart item,
+        recalculate the item value and the total value of the cart accordingly.
+        """
+        if request.user.is_authenticated:
+            cart = ShoppingCart.objects.get(is_ordered=False)
+        else:
+            cart = ShoppingCart.objects.get(pk=request.session.get("cart"))
+        items = cart.cartitem_set.all().order_by("pk")
+        qty = int(request.POST.get("qty"))
+        product = request.POST.get("product")
+        item = cart.cartitem_set.get(product=product)
+        item.quantity = qty
+        item.save()
+        total = cart.total()
+        ctx = {"items": items, "total": total}
+        return render(request, "niunius/shopping_cart.html", ctx)
+
+
+class DeleteItemView(View):
+    """Delete the given cart item from the shopping cart."""
+
+    def post(self, request, pk):
+        item_to_delete = CartItem.objects.get(pk=pk)
+        item_to_delete.delete()
+        return redirect("shopping-cart")
+
+
+class OrderView(View):
+    """
+    Order view for logged users.
+
+    For logged users, once the shopping cart is created (creation is when the first item is added to the cart),
+    the cart is saved and is editable at any time, if the user logged in, till the order is placed.
+    """
+
+    def get(self, request):
+        """
+        Display the order forms for buyers who have accounts and are logged in..
+        Fill them with the personal and address data (if available) of the logged user.
+        """
         form = (
             OrderForm(
                 initial={
@@ -469,21 +564,18 @@ class OrderView(View):
                 "email": request.user.email,
             }
         )
-        delivery_form = DeliveryForm(initial={"delivery_method": "Kurier"})
-        payment_form = PaymentForm(initial={"payment_method": "Przelew"})
-        return render(
-            request,
-            "niunius/order_form.html",
-            {
-                "form": form,
-                "buyer_form": buyer_form,
-                "delivery_form": delivery_form,
-                "payment_form": payment_form,
-            },
-        )
+        delivery_form = DeliveryForm()
+        payment_form = PaymentForm()
+        ctx = {
+            "form": form,
+            "buyer_form": buyer_form,
+            "delivery_form": delivery_form,
+            "payment_form": payment_form,
+        }
+        return render(request, "niunius/order_form.html", ctx)
 
     def post(self, request):
-
+        """Save the order with provided details."""
         form = OrderForm(request.POST)
         buyer_form = BuyerForm(request.POST)
         delivery_form = DeliveryForm(request.POST)
@@ -529,36 +621,38 @@ class OrderView(View):
             buyer.save()
 
             return redirect("confirm-order", order.pk)
-        return render(
-            request,
-            "niunius/order_form.html",
-            {
-                "form": form,
-                "buyer_form": buyer_form,
-                "delivery_form": delivery_form,
-                "payment_form": payment_form,
-            },
-        )
+
+        ctx = {
+            "form": form,
+            "buyer_form": buyer_form,
+            "delivery_form": delivery_form,
+            "payment_form": payment_form,
+        }
+        return render(request, "niunius/order_form.html", ctx)
 
 
 class GuestOrderView(View):
+    """
+    Order view for anonymous users.
+    For anonymous users, the given shopping cart is available and editable only in the session.
+    """
+
     def get(self, request):
+        """Display the order forms for guest buyers."""
         form = OrderForm()
         guest_form = GuestForm()
-        delivery_form = DeliveryForm(initial={"delivery_method": "Kurier"})
-        payment_form = PaymentForm(initial={"payment_method": "Przelew"})
-        return render(
-            request,
-            "niunius/guest_order_form.html",
-            {
-                "form": form,
-                "guest_form": guest_form,
-                "delivery_form": delivery_form,
-                "payment_form": payment_form,
-            },
-        )
+        delivery_form = DeliveryForm()
+        payment_form = PaymentForm()
+        ctx = {
+            "form": form,
+            "guest_form": guest_form,
+            "delivery_form": delivery_form,
+            "payment_form": payment_form,
+        }
+        return render(request, "niunius/guest_order_form.html", ctx)
 
     def post(self, request):
+        """Save the order with provided details."""
         form = OrderForm(request.POST)
         guest_form = GuestForm(request.POST)
         delivery_form = DeliveryForm(request.POST)
@@ -575,7 +669,7 @@ class GuestOrderView(View):
             address_country = form.cleaned_data["address_country"]
             delivery_method = delivery_form.cleaned_data["delivery_method"]
             payment_method = payment_form.cleaned_data["payment_method"]
-            cart = ShoppingCart.objects.get(is_ordered=False)
+            cart = ShoppingCart.objects.get(pk=request.session.get("cart"))
             try:
                 order = Order.objects.get(cart_id=cart.id)
             except Order.DoesNotExist:
@@ -602,19 +696,22 @@ class GuestOrderView(View):
             order.save()
 
             return redirect("confirm-order", order.pk)
-        return render(
-            request,
-            "niunius/guest_order_form.html",
-            {
-                "form": form,
-                "guest_form": guest_form,
-                "delivery_form": delivery_form,
-                "payment_form": payment_form,
-            },
-        )
+
+        ctx = {
+            "form": form,
+            "guest_form": guest_form,
+            "delivery_form": delivery_form,
+            "payment_form": payment_form,
+        }
+        return render(request, "niunius/guest_order_form.html", ctx)
 
 
 class OrderConfirmationView(View):
+    """
+    Display order details so as the user may confirm and proceed
+    or return to the previous page and edit if needed.
+    """
+
     def get(self, request, pk):
         order = get_object_or_404(Order, pk=pk)
         items = order.cart.cartitem_set.all().order_by("pk")
@@ -623,13 +720,21 @@ class OrderConfirmationView(View):
 
 
 class PurchaseView(View):
+    """
+    Display the message confirming the purchase..
+    Decrease the stock with the ordered quantities.
+    Set the shopping cart related to this order to is_ordered = True for logged users
+    or delete it from the session for anonymous users.
+    """
+
     def get(self, request, pk):
         order = get_object_or_404(Order, pk=pk)
-
         for item in order.cart.cartitem_set.all():
             item.product.stock -= item.quantity
             item.product.save()
         order.cart.is_ordered = True
+        if "cart" in request.session:
+            del request.session["cart"]
         order.cart.save()
         order.save()
         return render(request, "niunius/purchase.html")

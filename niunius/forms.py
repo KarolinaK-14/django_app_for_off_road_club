@@ -12,7 +12,10 @@ from .models import Article, ArticleComment, Order, CarService
 
 
 class RegisterForm(UserCreationForm):
-    """A form that creates a new user."""
+    """
+    The form that extends the built-in UserCreationForm with the following fields:
+    email, first name and last name.
+    """
 
     email = forms.EmailField(label="E-mail")
     first_name = forms.CharField(label="Imię")
@@ -42,7 +45,7 @@ class RegisterForm(UserCreationForm):
 
 
 class MessageForm(forms.Form):
-    """A form that allows a user send an email message."""
+    """The form that allows users send an e-mail message."""
 
     message_name = forms.CharField(
         widget=forms.TextInput(attrs={"placeholder": "Twoje imię"})
@@ -56,14 +59,13 @@ class MessageForm(forms.Form):
 
 
 def validate_date(visit_date):
-    """Check if the given date is in the past. If so, raise the error."""
-
+    """Raise the error if the given date has already passed."""
     if visit_date < datetime.date.today():
-        raise ValidationError("Data nie może być z przeszłości")
+        raise ValidationError("Ale to już było! Wybierz datę z przyszłości")
 
 
 class VisitForm(forms.Form):
-    """A form that allows a user book a visit."""
+    """The form that allows users to book a visit to the car service station."""
 
     client_name = forms.CharField(
         widget=forms.TextInput(attrs={"placeholder": "Twoje imię"}), label=""
@@ -100,6 +102,11 @@ class VisitForm(forms.Form):
 
 
 class ArticleForm(forms.ModelForm):
+    """
+    The form that allows users adding new Article object.
+    Additional "photos" field serves to add photos to ArticlePhoto model.
+    """
+
     photos = forms.ImageField(
         label="",
         widget=forms.ClearableFileInput(
@@ -119,6 +126,8 @@ class ArticleForm(forms.ModelForm):
 
 
 class ArticleCommentForm(forms.ModelForm):
+    """The form that allows users adding comments to articles."""
+
     class Meta:
         model = ArticleComment
         fields = ["text"]
@@ -126,6 +135,8 @@ class ArticleCommentForm(forms.ModelForm):
 
 
 class BuyerForm(forms.ModelForm):
+    """The one of order forms for personal data of the buyer who is the registered user."""
+
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email"]
@@ -133,20 +144,36 @@ class BuyerForm(forms.ModelForm):
 
 
 class GuestForm(forms.Form):
+    """
+    The one of order forms for personal data of the buyer
+    who wants to place an order as a guest, without registration.
+    """
+
     guest_first_name = forms.CharField(widget=forms.TextInput(), label="Imię")
     guest_last_name = forms.CharField(widget=forms.TextInput(), label="Nazwisko")
     guest_email = forms.EmailField(widget=forms.EmailInput(), label="E-mail")
 
 
 class DeliveryForm(forms.Form):
+    """
+    The one of order forms to choose delivery method.
+    Default choice: "Kurier"
+    """
+
     delivery_method = forms.ChoiceField(
         choices=[("Kurier", "Kurier"), ("Odbiór własny", "Odbiór własny")],
         widget=forms.RadioSelect(),
         label="",
+        initial="Kurier",
     )
 
 
 class PaymentForm(forms.Form):
+    """
+    The one of order forms to choose payment method.
+    Default choice: "Przelew"
+    """
+
     payment_method = forms.ChoiceField(
         choices=[
             ("Przelew", "Przelew"),
@@ -154,10 +181,13 @@ class PaymentForm(forms.Form):
         ],
         widget=forms.RadioSelect(),
         label="",
+        initial="Przelew",
     )
 
 
 class OrderForm(forms.ModelForm):
+    """The one of order forms for address data."""
+
     class Meta:
         model = Order
         fields = [

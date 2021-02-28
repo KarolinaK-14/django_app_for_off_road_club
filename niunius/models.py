@@ -5,6 +5,19 @@ from django.utils.text import slugify
 
 
 class Article(models.Model):
+    """
+    Title: title of the article
+    Slug: slugified title
+    Content: content of the article
+    Added_by: user who created the article, User object
+    Updated_by: user who made some changes, User object;
+    user editing the article may be different from user who has created this article
+    Added: date & time of creation
+    Updated: date & time of update
+    Like: how many times users pressed 'like' button for the article, default = 0
+    Dislike: how many times users pressed 'dislike' button for the article, default = 0
+    """
+
     title = models.CharField(max_length=128, verbose_name="Tytuł")
     slug = models.SlugField(unique=True, blank=True, max_length=128)
     content = models.TextField(verbose_name="Treść")
@@ -23,7 +36,9 @@ class Article(models.Model):
         related_name="update",
     )
     added = models.DateTimeField(auto_now_add=True, verbose_name="Dodano")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Zmieniono")
+    updated = models.DateTimeField(
+        auto_now=True, null=True, blank=True, verbose_name="Zmieniono"
+    )
     like = models.IntegerField(default=0, verbose_name="Lubię")
     dislike = models.IntegerField(default=0, verbose_name="Nie lubię")
 
@@ -40,6 +55,11 @@ class Article(models.Model):
 
 
 class ArticlePhoto(models.Model):
+    """
+    Article: Article object; each article can have many photos
+    Photo: photo of the article
+    """
+
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, verbose_name="Artykuł"
     )
@@ -54,6 +74,13 @@ class ArticlePhoto(models.Model):
 
 
 class ArticleComment(models.Model):
+    """
+    Article: Article object
+    Text: text of the comment
+    User: who has added the comment, User object
+    Added: when the comment was added
+    """
+
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, verbose_name="Artykuł"
     )
@@ -70,6 +97,13 @@ class ArticleComment(models.Model):
 
 
 class Car(models.Model):
+    """
+    Brand: brand of the car
+    Model: model of the car brand, unique
+    Slug: slugified name of the car; name is a concatenation of car brand and car model
+    Image: image of the car
+    """
+
     brand = models.CharField(max_length=64, verbose_name="Marka")
     model = models.CharField(max_length=64, unique=True, verbose_name="Model")
     slug = models.SlugField(unique=True, blank=True, max_length=128)
@@ -89,6 +123,7 @@ class Car(models.Model):
         return self.name
 
     def get_available_products(self):
+        """Display only these products related to the car for which stock is not equal to 0."""
         return self.product_set.exclude(stock=0)
 
     def save(self, *args, **kwargs):
@@ -97,6 +132,11 @@ class Car(models.Model):
 
 
 class Category(models.Model):
+    """
+    Name: name of the category
+    Slug: slugified name of the category
+    """
+
     name = models.CharField(max_length=64, verbose_name="Nazwa")
     slug = models.SlugField(unique=True, blank=True, max_length=64)
 
@@ -108,6 +148,7 @@ class Category(models.Model):
         return self.name
 
     def get_available_products(self):
+        """Display only these products related to the category for which stock is not equal to 0."""
         return self.product_set.exclude(stock=0)
 
     def save(self, *args, **kwargs):
@@ -116,11 +157,26 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """
+    Name: name of the product
+    Slug: slugified name of the product
+    Added: when the product was added
+    Code: unique code of the product
+    Stock: available quantity of the product
+    Description: description of the product
+    Price: price of the product
+    Image: image of the product
+    Cars: set of Car objects to which the product is related
+    Categories: set of Category objects to which the product is related
+    """
+
     name = models.CharField(max_length=128, verbose_name="Nazwa")
     slug = models.SlugField(unique=True, blank=True, max_length=128)
     added = models.DateTimeField(auto_now_add=True, verbose_name="Dodano")
-    code = models.CharField(max_length=128, verbose_name="Kod produktu")
-    stock = models.IntegerField(verbose_name="Dostępność")
+    code = models.CharField(max_length=128, unique=True, verbose_name="Kod produktu")
+    stock = models.IntegerField(
+        validators=[MinValueValidator(0)], verbose_name="Dostępność"
+    )
     description = models.TextField(verbose_name="Opis")
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Cena")
     image = models.ImageField(
@@ -142,13 +198,21 @@ class Product(models.Model):
 
 
 class ShoppingCart(models.Model):
-    is_ordered = models.BooleanField(default=False)
+    """
+    Is_ordered:
+        False - when the shopping cart is created for logged users
+        True - when the order related to the shopping cart is finalized, only for logged users
+        Null - for anonymous users
+    """
+
+    is_ordered = models.BooleanField(null=True)
 
     class Meta:
         verbose_name = "Koszyk"
         verbose_name_plural = "Koszyki"
 
     def total(self):
+        """Calculate the total value of the shopping cart, amount to pay."""
         return sum([item.value for item in self.cartitem_set.all()])
 
     def __str__(self):
@@ -156,6 +220,12 @@ class ShoppingCart(models.Model):
 
 
 class CartItem(models.Model):
+    """
+    Product: related Product object
+    Quantity: quantity of a given product in a given shopping cart
+    Cart: related ShoppingCart object
+    """
+
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, verbose_name="Produkt"
     )
@@ -179,6 +249,23 @@ class CartItem(models.Model):
 
 
 class Order(models.Model):
+    """
+    Cart: related ShoppingCart object
+    Buyer: logged user who placed the order, can be null as orders by guests are allowed
+    Guest_buyer_first_name:
+        the first name of the buyer-guest who placed the order, can be null if buyer-logged user exists
+    Guest_buyer_last_name:
+        the last name of the buyer-guest who placed the order, can be null if buyer-logged user exists
+    Guest_buyer_email:
+        the e-mail the buyer-guest who placed the order, can be null if buyer-logged user exists
+    Address_city, Address_zipcode, Address_street, Address_country:
+        details for the address of the buyer who placed the order
+    Date: date & time of the order
+    Delivery: delivery method chosen for the order
+    Payment: payment method chosen for the order
+    Paid: True if the order was paid for, False otherwise
+    """
+
     cart = models.OneToOneField(ShoppingCart, on_delete=models.CASCADE)
     buyer = models.ForeignKey(
         User,
@@ -230,9 +317,9 @@ class Order(models.Model):
 
 class CarService(models.Model):
     """
-    name: name of the car service
-    price: price of the car service
-    time: duration of the car service, in minutes
+    Name: name of the car service
+    Price: price of the car service
+    Time: duration of the car service, in hours
     """
 
     name = models.CharField(max_length=64, verbose_name="Nazwa usługi")

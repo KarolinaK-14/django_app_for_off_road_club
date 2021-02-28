@@ -115,9 +115,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # EMAIL SETTINGS
-# To check sent messages run the following command in the terminal:
+
+# The current settings allow you to check sent messages in the terminal. Just use the below command:
 # python -m smtpd -n -c DebuggingServer localhost:1025
-# TODO: In the production version, below details need to be replaced by ones appropriate for a chosen email provider.
+
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025

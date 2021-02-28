@@ -6,9 +6,9 @@
         <div class="col-5">
             <div class="row p-3" style="border: solid darkorange">
 
-                <p>{{ order.buyer.first_name }}{{ order.guest_buyer_first_name }}</p>
-                <p>{{ order.buyer.last_name }}{{ order.guest_buyer_last_name }}</p>
-                <p>{{ order.buyer.email }}{{ order.guest_buyer_email }}</p>
+                <p>{% firstof order.buyer.first_name order.guest_buyer_first_name %}</p>
+                <p>{% firstof order.buyer.last_name order.guest_buyer_last_name %}</p>
+                <p>{% firstof order.buyer.email order.guest_buyer_email %}</p>
                 <hr>
                 <p>{{ order.address_street }}</p>
                 <p>{{ order.address_zipcode }} {{ order.address_city }}</p>
