@@ -149,7 +149,10 @@ class BookVisitView(View):
             visit_date = f"{day} {calendar.month_name[month]} {year}"
             visit_time = form.cleaned_data["visit_time"]
             msg_title = f"{client_name} - {service}"
-            msg_body = f"{client_name}, tel. {client_phone}, usługa: {service}, dzień: {visit_date}, czas: {visit_time}"
+            msg_body = (
+                f"{client_name}, tel. {client_phone}, usługa: {service},"
+                f" dzień: {visit_date}, czas: {visit_time}"
+            )
             send_mail(
                 msg_title,  # message title
                 msg_body,  # message body
