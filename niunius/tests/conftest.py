@@ -9,7 +9,7 @@ def order():
 
 
 @pytest.fixture
-def logged_user(client):
+def user(client):
     user = mixer.blend("auth.User")
     client.force_login(user)
     return user

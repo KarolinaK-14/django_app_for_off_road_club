@@ -1,13 +1,21 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordChangeView
 from django.core.paginator import Paginator
 from django.db.models import F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.views import View
-from django.views.generic import ListView, TemplateView, CreateView
+from django.views.generic import (
+    ListView,
+    TemplateView,
+    CreateView,
+    DetailView,
+    UpdateView,
+)
 
 import locale
 import calendar
@@ -17,12 +25,12 @@ from .forms import (
     ArticleCommentForm,
     OrderForm,
     BuyerForm,
-    RegisterForm,
     MessageForm,
     VisitForm,
     DeliveryForm,
     PaymentForm,
     GuestForm,
+    UserForm,
 )
 from .models import (
     Article,
@@ -49,17 +57,53 @@ class HomeView(TemplateView):
 
 class RegisterView(CreateView):
     """Create new user."""
-    form_class = RegisterForm
+
+    form_class = UserForm
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
 
 
-class AboutView(View):
+class UserChangeView(LoginRequiredMixin, UpdateView):
+    """Edit user profile."""
+
+    login_url = reverse_lazy("login")
+    model = User
+    template_name = "registration/edit_profile.html"
+    success_url = reverse_lazy("home")
+    fields = ["first_name", "last_name", "email", "username"]
+
+    def get_object(self):
+        return self.request.user
+
+
+class PasswordsChangeView(LoginRequiredMixin, PasswordChangeView):
+    """Change user password."""
+
+    login_url = reverse_lazy("login")
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy("edit-profile")
+
+
+class UserOrdersView(LoginRequiredMixin, ListView):
+    """Display orders placed by the logged-in user."""
+
+    login_url = reverse_lazy("login")
+    model = Order
+    template_name = "registration/user_orders.html"
+
+    def get_queryset(self):
+        queryset = Order.objects.filter(buyer=self.request.user).order_by("-date")
+        return queryset
+
+
+class AboutView(DetailView):
     """Display one specific Article object - information about the club."""
 
-    def get(self, request):
-        article = get_object_or_404(Article, slug="o-klubie")
-        return render(request, "niunius/about.html", {"article": article})
+    model = Article
+    template_name = "niunius/about.html"
+
+    def get_object(self):
+        return get_object_or_404(Article, slug="o-klubie")
 
 
 class ContactView(View):
@@ -184,7 +228,7 @@ class BlogView(View):
 
 
 class AddArticleView(LoginRequiredMixin, View):
-    """Add a new article to the blog page. Only for logged users."""
+    """Add a new article to the blog page. Only for logged-in users."""
 
     login_url = reverse_lazy("login")
 
@@ -215,7 +259,7 @@ class AddArticleView(LoginRequiredMixin, View):
 
 class UpdateArticleView(LoginRequiredMixin, View):
     """
-    Edit a given article. Only for logged users.
+    Edit a given article. Only for logged-in users.
     User who want to edit the article may be different from the user who has created this article.
     """
 
@@ -288,7 +332,7 @@ class ArticleDetailView(View):
 
 
 class AddCommentView(LoginRequiredMixin, View):
-    """Add a comment to the given article. Only for logged users."""
+    """Add a comment to the given article. Only for logged-in users."""
 
     login_url = reverse_lazy("login")
 
@@ -350,28 +394,24 @@ class SearchView(ListView):
         return context
 
 
-class CarView(View):
+class CarView(DetailView):
     """
     Display details of the given car.
     As for products related to the car, show only available ones, skip those with stock equal to 0.
     """
 
-    def get(self, request, slug):
-        car = get_object_or_404(Car, slug=slug)
-        ctx = {"car": car}
-        return render(request, "niunius/car.html", ctx)
+    model = Car
+    template_name = "niunius/car.html"
 
 
-class CategoryView(View):
+class CategoryView(DetailView):
     """
     Display details of the given category.
     As for products related to the car, show only available ones, skip those with stock equal to 0.
     """
 
-    def get(self, request, slug):
-        category = get_object_or_404(Category, slug=slug)
-        ctx = {"category": category}
-        return render(request, "niunius/category.html", ctx)
+    model = Category
+    template_name = "niunius/category.html"
 
 
 class ProductView(View):
@@ -388,7 +428,7 @@ class ProductView(View):
         However, it is handled differently for logged and not logged in users.
 
         For anonymous users, the given shopping cart is available and editable only in the session.
-        For logged users, once the shopping cart is created (creation is when the first item is added to the cart),
+        For logged-in users, once the shopping cart is created (creation is when the first item is added to the cart),
         the cart is saved and is editable at any time, if the user logged in, till the order is placed.
         """
         product = Product.objects.get(slug=slug)
@@ -434,7 +474,7 @@ class ShoppingCartView(View):
     Previously chosen item quantity may be changed in this view and all values will be recalculated accordingly.
 
     For anonymous users, the given shopping cart is available and editable only in the session.
-    For logged users, once the shopping cart is created (creation is when the first item is added to the cart),
+    For logged-in users, once the shopping cart is created (creation is when the first item is added to the cart),
     the cart is saved and is editable at any time, if the user logged in, till the order is placed.
     """
 
@@ -483,16 +523,16 @@ class DeleteItemView(View):
 
 class OrderView(View):
     """
-    Order view for logged users.
+    Order view for logged-in users.
 
-    For logged users, once the shopping cart is created (creation is when the first item is added to the cart),
+    For logged-in users, once the shopping cart is created (creation is when the first item is added to the cart),
     the cart is saved and is editable at any time, if the user logged in, till the order is placed.
     """
 
     def get(self, request):
         """
         Display the order forms for buyers who have accounts and are logged in..
-        Fill them with the personal and address data (if available) of the logged user.
+        Fill them with the personal and address data (if available) of the logged-in user.
         """
         form = (
             OrderForm(
@@ -678,7 +718,7 @@ class PurchaseView(View):
     """
     Display the message confirming the purchase..
     Decrease the stock with the ordered quantities.
-    Set the shopping cart related to this order to is_ordered = True for logged users
+    Set the shopping cart related to this order to is_ordered = True for logged-in users
     or delete it from the session for anonymous users.
     """
 

@@ -62,3 +62,10 @@ h2, h3, h4 {
 .form-field {
     width: 100%;
 }
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

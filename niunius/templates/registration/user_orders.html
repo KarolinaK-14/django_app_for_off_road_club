@@ -1,0 +1,21 @@
+{% extends "niunius/base.html" %}
+{% block content %}
+
+    <h3>Moje zamówienia</h3>
+    <hr>
+    <ul>
+    {% for order in object_list %}
+        <li>{{ order }} | {{ order.date }}
+            <ol>
+            {% for item in order.cart.cartitem_set.all %}
+                <li>{{ item }}</li>
+                {% endfor %}
+            </ol>
+        </li><br>
+    {% empty %}
+        <li>Brak zamówień.</li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
+{% block music %}{% endblock %}

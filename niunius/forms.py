@@ -1,7 +1,7 @@
 import datetime
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
@@ -11,7 +11,7 @@ from django.utils import timezone
 from .models import Article, ArticleComment, Order, CarService
 
 
-class RegisterForm(UserCreationForm):
+class UserForm(UserCreationForm):
     """
     The form that extends the built-in UserCreationForm with the following fields:
     email, first name and last name.
@@ -120,8 +120,8 @@ class ArticleForm(forms.ModelForm):
         fields = ["title", "content", "photos"]
         labels = {"title": "", "content": ""}
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "nazwa wydarzenia"}),
-            "content": forms.Textarea(attrs={"placeholder": "opis"}),
+            "title": forms.TextInput(attrs={"placeholder": "Tytuł"}),
+            "content": forms.Textarea(attrs={"placeholder": "Opis"}),
         }
 
 

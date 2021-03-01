@@ -5,7 +5,8 @@
     <div class="col-6 container">
     <h2>Zaloguj się</h2><hr>
         {% if form.errors %}
-            <p>Nazwa użytkownika i/lub hasło są nieprawidłowe. Spróbuj ponownie.</p>
+            <small style="display: inline; color: red;">Nazwa użytkownika i/lub hasło są nieprawidłowe. Spróbuj ponownie.</small>
+            <br><br>
         {% endif %}
 
     <form method="post" action="{% url 'login' %}">

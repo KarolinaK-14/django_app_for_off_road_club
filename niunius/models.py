@@ -200,8 +200,8 @@ class Product(models.Model):
 class ShoppingCart(models.Model):
     """
     Is_ordered:
-        False - when the shopping cart is created for logged users
-        True - when the order related to the shopping cart is finalized, only for logged users
+        False - when the shopping cart is created for logged-in users
+        True - when the order related to the shopping cart is finalized, only for logged-in users
         Null - for anonymous users
     """
 
@@ -245,19 +245,19 @@ class CartItem(models.Model):
         verbose_name_plural = "W koszyku"
 
     def __str__(self):
-        return f"{self.product.name}, {self.quantity} szt., nr koszyka: {self.cart.id}"
+        return f"{self.product.name}, {self.quantity} szt."
 
 
 class Order(models.Model):
     """
     Cart: related ShoppingCart object
-    Buyer: logged user who placed the order, can be null as orders by guests are allowed
+    Buyer: logged-in user who placed the order, can be null as orders by guests are allowed
     Guest_buyer_first_name:
-        the first name of the buyer-guest who placed the order, can be null if buyer-logged user exists
+        the first name of the buyer-guest who placed the order, can be null if buyer (logged-in user) exists
     Guest_buyer_last_name:
-        the last name of the buyer-guest who placed the order, can be null if buyer-logged user exists
+        the last name of the buyer-guest who placed the order, can be null if buyer (logged-in user) exists
     Guest_buyer_email:
-        the e-mail the buyer-guest who placed the order, can be null if buyer-logged user exists
+        the e-mail the buyer-guest who placed the order, can be null if buyer (logged-in user) exists
     Address_city, Address_zipcode, Address_street, Address_country:
         details for the address of the buyer who placed the order
     Date: date & time of the order

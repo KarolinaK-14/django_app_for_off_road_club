@@ -29,6 +29,7 @@ def test_home_view_if_has_blog_reference(client):
 
 # RegisterView
 
+
 def test_register_view():
     request = RequestFactory().get("")
     response = views.RegisterView.as_view()(request)
@@ -40,6 +41,55 @@ def test_register_view_if_missing_form_data(client):
     response = client.post(reverse("register"))
     assert form.is_valid() is False
     assert response.status_code == 200
+
+
+# UserChangeView
+
+
+@pytest.mark.django_db
+def test_user_change_view(client, user):
+    response = client.get(reverse("edit-profile"))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_user_change_view_if_unauthenticated_user(client):
+    response = client.get(reverse("edit_profile"))
+    assert response.status_code == 302
+
+
+# PasswordChangeView
+
+
+@pytest.mark.django_db
+def test_change_password_view(client, user):
+    response = client.get(reverse("change-password"))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_change_password_view_if_unauthenticated_user(client):
+    response = client.get(reverse("change-password"))
+    assert response.status_code == 302
+
+
+# UserOrdersView
+
+
+@pytest.mark.django_db
+def test_user_orders_view(client, user):
+    response = client.get(reverse("user-orders"))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_user_orders_view_if_orders_sorted_by_date_descending(client, user):
+    order1 = mixer.blend("niunius.Order", buyer=user)
+    order2 = mixer.blend("niunius.Order", buyer=user)
+    orders = [order1, order2]
+    response = client.get(reverse("user-orders"))
+    assert order1 in response.context["order_list"]
+    assert response.context["order_list"][0] == orders[1]
 
 
 # AboutView
@@ -130,7 +180,7 @@ def test_blog_view_if_articles_sorted_by_date_descending(client, articles):
 
 
 @pytest.mark.django_db
-def test_add_article_view(client, logged_user):
+def test_add_article_view(client, user):
     response = client.get(reverse("add-article"))
     assert response.status_code == 200
 
@@ -147,7 +197,7 @@ def test_add_article_view_if_unauthenticated_user():
 
 
 @pytest.mark.django_db
-def test_update_article_view(client, logged_user):
+def test_update_article_view(client, user):
     article = mixer.blend("niunius.Article")
     response = client.get(reverse("update-article", kwargs={"pk": article.pk}))
     assert response.status_code == 200
@@ -191,7 +241,7 @@ def test_article_detail_view_dislike_button(client, article):
 
 
 @pytest.mark.django_db
-def test_add_comment_view(client, logged_user):
+def test_add_comment_view(client, user):
     article = mixer.blend("niunius.Article")
     response = client.get(reverse("add-comment", kwargs={"pk": article.pk}))
     assert response.status_code == 200
@@ -206,7 +256,7 @@ def test_add_comment_view_if_unauthenticated_user():
 
 
 @pytest.mark.django_db
-def test_add_comment_view_if_comment_counter_works(client, logged_user, article):
+def test_add_comment_view_if_comment_counter_works(client, user, article):
     data = {"text": "test_text"}
     count = article.articlecomment_set.count()
     response = client.post(reverse("add-comment", kwargs={"pk": article.pk}), data=data)
@@ -332,13 +382,15 @@ def test_delete_item_view_if_shopping_cart_items_changed(client, product):
 
 
 @pytest.mark.django_db
-def test_shopping_cart_view_if_logged_user(client, logged_user):
+def test_shopping_cart_view_if_logged_user(client, user):
     response = client.get(reverse("shopping-cart"))
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
-def test_shopping_cart_view_changing_item_quantity_if_logged_user(client, logged_user, product):
+def test_shopping_cart_view_changing_item_quantity_if_logged_user(
+    client, user, product
+):
     cart = mixer.blend("niunius.ShoppingCart", is_ordered=False)
     mixer.blend("niunius.CartItem", cart=cart, product=product)
     data = {"qty": 2, "product": product.id}
@@ -351,7 +403,7 @@ def test_shopping_cart_view_changing_item_quantity_if_logged_user(client, logged
 
 
 @pytest.mark.django_db
-def test_order_view(client, logged_user):
+def test_order_view(client, user):
     response = client.get(reverse("order"))
     assert response.status_code == 200
 

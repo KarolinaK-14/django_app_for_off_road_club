@@ -11,18 +11,17 @@
 <div class="row p-2">
 
 <div class="col-4">
-    <table>
+    <ul>
         {% for article in page_obj %}
-            <tr>
-                <td style="border: solid lightgray; padding: 5px;"> {{ article.title }} </td>
-                <td><a class="btn btn-secondary" href="{% url 'article-detail' article.slug %}">szczegóły</a></td>
-                <td><a class="btn btn-secondary" href="{% url 'update-article' article.pk %}">edytuj</a></td>
-            </tr>
+            <li class="p-3">
+                <p style="display: inline"> {{ article.title }} </p>
+                <a class="btn btn-secondary" style="float: right;" href="{% url 'article-detail' article.slug %}">szczegóły</a>
+            </li>
         {% endfor %}
-            <tr>
-                <td style="border: solid lightgray; padding: 5px;"><a href="{% url 'add-article' %}">dodaj nowy artykuł</a></td>
-            </tr>
-    </table>
+            <li class="p-3">
+                <p style="display: inline"><a href="{% url 'add-article' %}">dodaj nowy artykuł</a></p>
+            </li>
+    </ul>
 <br>
 <div class="pagination">
     <span class="step-links">

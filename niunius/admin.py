@@ -25,8 +25,6 @@ admin_site = MyAdminSite(name="myadmin")
 admin_site.register(User)
 admin_site.register(ArticlePhoto)
 admin_site.register(ArticleComment)
-admin_site.register(ShoppingCart)
-admin_site.register(CartItem)
 admin_site.register(CarService)
 
 
@@ -36,6 +34,10 @@ class ArticlePhotoInLine(admin.TabularInline):
 
 class ArticleCommentInLine(admin.TabularInline):
     model = ArticleComment
+
+
+class CartItemInLine(admin.TabularInline):
+    model = CartItem
 
 
 @admin.register(Article, site=admin_site)
@@ -57,6 +59,11 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product, site=admin_site)
 class ProductAdmin(admin.ModelAdmin):
     exclude = ["slug"]
+
+
+@admin.register(ShoppingCart, site=admin_site)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    inlines = [CartItemInLine]
 
 
 @admin.register(Order, site=admin_site)
