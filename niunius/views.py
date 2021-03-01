@@ -49,7 +49,8 @@ from .models import (
 class HomeView(TemplateView):
     """Display the home page - the club logo and the navbar with links leading to subpages."""
 
-    # There is one more thing that may additionally appear on this page. Only the code for it needs to be uncommented.
+    # There is one more thing that may additionally appear on this page.
+    # Only the code for it needs to be uncommented.
     # Go through all the files and find it :-)
 
     template_name = "niunius/base.html"
@@ -428,7 +429,8 @@ class ProductView(View):
         However, it is handled differently for logged and not logged in users.
 
         For anonymous users, the given shopping cart is available and editable only in the session.
-        For logged-in users, once the shopping cart is created (creation is when the first item is added to the cart),
+        For logged-in users,
+        once the shopping cart is created (creation is when the first item is added to the cart),
         the cart is saved and is editable at any time, if the user logged in, till the order is placed.
         """
         product = Product.objects.get(slug=slug)
@@ -474,7 +476,8 @@ class ShoppingCartView(View):
     Previously chosen item quantity may be changed in this view and all values will be recalculated accordingly.
 
     For anonymous users, the given shopping cart is available and editable only in the session.
-    For logged-in users, once the shopping cart is created (creation is when the first item is added to the cart),
+    For logged-in users,
+    once the shopping cart is created (creation is when the first item is added to the cart),
     the cart is saved and is editable at any time, if the user logged in, till the order is placed.
     """
 
@@ -525,7 +528,8 @@ class OrderView(View):
     """
     Order view for logged-in users.
 
-    For logged-in users, once the shopping cart is created (creation is when the first item is added to the cart),
+    For logged-in users,
+    once the shopping cart is created (creation is when the first item is added to the cart),
     the cart is saved and is editable at any time, if the user logged in, till the order is placed.
     """
 
