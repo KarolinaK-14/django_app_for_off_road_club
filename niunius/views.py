@@ -49,19 +49,6 @@ class HomeView(TemplateView):
     template_name = "niunius/base.html"
 
 
-class LogoutView(View):
-    """
-    Log out the user and redirect straight to the home page.
-
-    This view is to replace the default auth.LogoutView
-    that displays the 'You are logged out' message which is not desired in the "niunius" app.
-    """
-
-    def get(self, request):
-        logout(request)
-        return redirect("home")
-
-
 class RegisterView(View):
     """New user creation"""
 

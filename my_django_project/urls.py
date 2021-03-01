@@ -3,12 +3,13 @@ from django.conf.urls.static import static
 from django.conf import settings
 from niunius import views as v
 from niunius.admin import admin_site
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("myadmin/", admin_site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", v.HomeView.as_view(), name="home"),
-    path("logout/", v.LogoutView.as_view(), name="logout"),
+    path('logout/', auth_views.LogoutView.as_view(next_page="home"), name="logout"),
     path("register/", v.RegisterView.as_view(), name="register-user"),
     path("o-klubie/", v.AboutView.as_view(), name="about"),
     path("kontakt/", v.ContactView.as_view(), name="contact"),

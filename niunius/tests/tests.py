@@ -27,21 +27,6 @@ def test_home_view_if_has_blog_reference(client):
     assert "blog" in content
 
 
-# LogoutView
-
-
-@pytest.mark.django_db
-def test_logout_view(logged_user, client):
-    response = client.get(reverse("logout"))
-    assert response.status_code == 302
-
-
-@pytest.mark.django_db
-def test_logout_view_if_redirect_to_home_page(logged_user, client):
-    response = client.get(reverse("logout"))
-    assert "" in response.url
-
-
 # RegisterView
 
 
