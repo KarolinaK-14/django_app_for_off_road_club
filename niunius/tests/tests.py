@@ -29,7 +29,6 @@ def test_home_view_if_has_blog_reference(client):
 
 # RegisterView
 
-
 def test_register_view():
     request = RequestFactory().get("")
     response = views.RegisterView.as_view()(request)
@@ -38,7 +37,7 @@ def test_register_view():
 
 def test_register_view_if_missing_form_data(client):
     form = UserCreationForm(data={})
-    response = client.post(reverse("register-user"))
+    response = client.post(reverse("register"))
     assert form.is_valid() is False
     assert response.status_code == 200
 

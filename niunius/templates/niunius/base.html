@@ -51,7 +51,7 @@
             <a class="btn btn-outline-warning" href="{% url 'logout' %}">wyloguj się</a>
         {% else %}
             <a class="btn btn-outline-warning" href="{% url 'login' %}?next={{ request.path }}">zaloguj się</a>
-            <a class="btn btn-outline-warning" href="{% url 'register-user' %}?next={{ request.path }}">zarejestruj się</a>
+            <a class="btn btn-outline-warning" href="{% url 'register' %}?next={{ request.path }}">zarejestruj się</a>
         {% endif %}
     {% endblock %}
 

@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.views import View
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, CreateView
 
 import locale
 import calendar
@@ -39,51 +39,19 @@ from .models import (
 
 
 class HomeView(TemplateView):
-    """
-    Display the home page - the club logo and the navbar with links leading to subpages.
+    """Display the home page - the club logo and the navbar with links leading to subpages."""
 
-    There is one more thing that may additionally appear on this page. Only the code for it needs to be uncommented.
-    Go through all the files and find it :-)
-    """
+    # There is one more thing that may additionally appear on this page. Only the code for it needs to be uncommented.
+    # Go through all the files and find it :-)
 
     template_name = "niunius/base.html"
 
 
-class RegisterView(View):
-    """New user creation"""
-
-    def get(self, request):
-        """Display the empty register form."""
-        form = RegisterForm()
-        return render(request, "niunius/register_form.html", {"form": form})
-
-    def post(self, request):
-        """
-        If the form is correctly completed, then create a new user.
-        Once created, log the user in.
-        """
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            raw_password = form.cleaned_data["password1"]
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            email = form.cleaned_data["email"]
-            user = User.objects.create_user(
-                username=username,
-                password=raw_password,
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-            )
-            authenticate(user)
-            login(request, user)
-            next_url = request.GET.get("next")
-            if not next_url or next_url == "/accounts/login/":
-                return redirect("home")
-            return redirect(next_url)
-
-        return render(request, "niunius/register_form.html", {"form": form})
+class RegisterView(CreateView):
+    """Create new user."""
+    form_class = RegisterForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("login")
 
 
 class AboutView(View):
