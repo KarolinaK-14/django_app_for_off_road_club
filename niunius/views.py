@@ -473,7 +473,8 @@ class ProductView(View):
 class ShoppingCartView(View):
     """
     Shopping cart with added items.
-    Previously chosen item quantity may be changed in this view and all values will be recalculated accordingly.
+    Previously chosen item quantity may be changed in this view
+    and all values will be recalculated accordingly.
 
     For anonymous users, the given shopping cart is available and editable only in the session.
     For logged-in users,
