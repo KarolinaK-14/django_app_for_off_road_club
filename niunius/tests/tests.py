@@ -54,7 +54,7 @@ def test_user_change_view(client, user):
 
 @pytest.mark.django_db
 def test_user_change_view_if_unauthenticated_user(client):
-    response = client.get(reverse("edit_profile"))
+    response = client.get(reverse("edit-profile"))
     assert response.status_code == 302
 
 
