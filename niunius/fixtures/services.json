@@ -1,0 +1,20 @@
+[
+  {
+    "model": "niunius.carservice",
+    "pk": 1,
+    "fields": {
+      "name": "Usługa 1",
+      "price": 500,
+      "time": 5
+    }
+  },
+  {
+    "model": "niunius.carservice",
+    "pk": 2,
+    "fields": {
+      "name": "Usługa 2",
+      "price": 300,
+      "time": 3
+    }
+  }
+]

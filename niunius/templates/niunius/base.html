@@ -22,12 +22,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% url 'about' as about %}
           {% url 'home' as home %}
           {% url 'blog' as blog %}
           {% url 'shop' as shop %}
+          {% url 'car-service' as service %}
           {% url 'contact' as contact %}
         <li class="nav-item">
-          <a class="nav-link {% if request.path == blog %}active{% endif %}" href="{% url 'about' %}">o klubie</a>
+          <a class="nav-link {% if request.path == about %}active{% endif %}" href="{% url 'about' %}">o klubie</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.path == blog %}active{% endif %}" href="{% url 'blog' %}">blog</a>
@@ -36,7 +38,7 @@
           <a class="nav-link {% if request.path == shop %}active{% endif %}" href="{% url 'shop' %}">sklep</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.path == blog %}active{% endif %}" href="{% url 'car-service' %}">warsztat</a>
+          <a class="nav-link {% if request.path == service %}active{% endif %}" href="{% url 'car-service' %}">warsztat</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.path == contact %}active{% endif %}" href="{% url 'contact' %}">kontakt</a>

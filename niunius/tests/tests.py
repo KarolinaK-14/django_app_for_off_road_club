@@ -171,9 +171,9 @@ def test_blog_view():
 @pytest.mark.django_db
 def test_blog_view_if_articles_sorted_by_date_descending(client, articles):
     response = client.get(reverse("blog"))
-    assert response.context["articles"][0] == articles[2]
-    assert response.context["articles"][1] == articles[1]
-    assert response.context["articles"][2] == articles[0]
+    assert response.context["page_obj"][0] == articles[2]
+    assert response.context["page_obj"][1] == articles[1]
+    assert response.context["page_obj"][2] == articles[0]
 
 
 # AddArticleView
