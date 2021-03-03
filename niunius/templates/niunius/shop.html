@@ -1,6 +1,6 @@
 {% extends "niunius/base.html" %}
 {% load static %}
-{% block background %}style="background-color: lightgrey"{% endblock %}
+{% block background %}style="background-color: #e3dede"{% endblock %}
 {% block content %}
 
 <div class="row" style="float:right;">
@@ -24,20 +24,20 @@
     <div class="col-1"></div>
 </div>
 <div class="row">
-    <div class="col-3 p-3" style="border: solid darkorange">
-        <h3>Model auta</h3>
+    <div class="col-3 p-3" style="background-color: #212529;">
+        <h3 style="color: white">Model auta</h3>
             {% for car in cars %}
                 <p><a href="{% url 'car' car.slug %}">{{car.name}}</a></p>
             {% endfor %}
     <hr>
-        <h3>Kategoria</h3>
+        <h3 style="color: white">Kategoria</h3>
             {% for category in categories %}
                 <p><a href="{% url 'category' category.slug %}">{{category.name}}</a></p>
             {% endfor %}
     </div>
     <div class="col-1"></div>
     {% block content-shop %}
-    <div class="col-7 p-3" style="border: solid darkorange; position: relative">
+    <div class="col-7 p-3">
 
             <table>
                 <tr class="row">

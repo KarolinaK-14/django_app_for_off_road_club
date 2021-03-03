@@ -69,3 +69,9 @@ h2, h3, h4 {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+a {
+    color: #e3632d;
+    text-decoration: None;
+    font-weight: bold;
+}

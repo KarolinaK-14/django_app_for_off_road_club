@@ -221,7 +221,7 @@ class BlogView(View):
         page_obj = paginator.get_page(page_number)
         carousel_articles = articles[:4]
         ctx = {
-            "articles": articles,
+            # "articles": articles,
             "page_obj": page_obj,
             "carousel_articles": carousel_articles,
         }

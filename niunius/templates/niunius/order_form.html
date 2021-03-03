@@ -5,7 +5,7 @@
         <form method="post">{% csrf_token %}
         <div class="row">
             <div class="col-5">
-                <div class="row p-3" style="border: solid darkorange">
+                <div class="row p-3" style="border: solid #e3632d">
                     <h4>Dane kupującego</h4>
                     {% for field in buyer_form %}
                     {{ field.label }}
@@ -14,7 +14,7 @@
                     {% endfor %}
                 </div>
                 <br>
-                <div class="row p-3" style="border: solid darkorange">
+                <div class="row p-3" style="border: solid #e3632d">
                     <h4>Adres dostawy</h4>
                     {% for field in form %}
                     {{ field.label }}
@@ -25,12 +25,12 @@
             </div>
             <div class="col-1"></div>
             <div class="col-5">
-                <div class="row p-3" style="border: solid darkorange">
+                <div class="row p-3" style="border: solid #e3632d">
                     <h4>Sposób dostawy</h4>
                     {{ delivery_form.as_p }}
                 </div>
                 <br>
-                <div class="row p-3" style="border: solid darkorange">
+                <div class="row p-3" style="border: solid #e3632d">
                     <h4>Sposób płatności</h4>
                     {{ payment_form.as_p }}
                 </div>

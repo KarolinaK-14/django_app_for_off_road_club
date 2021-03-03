@@ -1,45 +1,59 @@
+Thank you for your interest in my project. Below you can read what it is about.
+
 # NIUNIUŚ
-This Django app is the website for the off-road club named "Niuniuś". 
-The website consists of the home page and four subpages: about, blog, shop, and service station.
-Blog and Shop subpages are ready to use, while About and Service Station are in progress and disabled for now.
-![Home Page](niunius/static/niunius/readme/home.png)
+In general, this Django app might be the website template for any club. In particular, the app was created for the off-road club named "Niuniuś", so that's why you may find here few customized elements, like the logo on the home page which you can see on the screenshot below.
+![Home Page](niunius/static/niunius/readme/readme_home.png)
 
-In order to explore the project, ***clone this repository*** to your local machine.
-You are very welcome to create pull requests if you find anything should be added/amended/deleted.
+## Start
 
-For start, follow the below steps:
-1. create the virtual environment and run the command `pip install -r requirements.txt`
-2. configure a database - in the project directory you need to create the file named ***local_settings.py*** and add there DATABASES with details of the database connection.
-   These details will be imported by Django as in the file `setting.py` the below code is included:
+To start exploring the project:
+1. clone this repository
+2. create the virtual environment and install requirements`pip install -r requirements.txt`
+3. configure a database - in the project directory you need to create the file named ***local_settings.py*** and add there DATABASES with details of the database connection.
+   These details will be imported by Django as in the file `setting.py` the following code is included:
    ```python
     try:
         from my_django_project.local_settings import *
     except ImportError:
         pass
     ```
-3. run the command `python manage.py makemigrations` and then `python manage.py migrate`
-4. load initial data to fill your database - use the command `python manage.py loaddata */fixtures/*.json`
-5. finally run `python manage.py runserver` and enjoy the app :)
+4. run the command `python manage.py makemigrations` and then `python manage.py migrate`
+5. load initial data to fill your database - use the command `python manage.py loaddata */fixtures/*.json`
+6. create a superuser to access the admin site: ` python manage.py createsuperuser`
+7. finally run the command `python manage.py runserver` and enjoy the app :-)
 
-## Blog 
+As for the app content, besides the home page already mentioned and shown, there are few more pages. These are:
+about page, blog page, shop page, car service station page and contact page. A short description of each follows...
 
-![Blog Page](niunius/static/niunius/readme/blog.png)
+### About
 
-The Blog subpage display articles. Only an authenticated user can add a new article. 
-After clicking on a title you are redirected to article details. Besides photo and description, there are three buttons:
-comments, like and dislike. Like and Dislike can be used by everyone. As for comments, all users can read existing comments, byt only authenticated users can add a new comment.
+This is one of articles from the blog, a specific one - with information about the club (like history, members etc.)
 
-## Shop
+### Blog 
 
-![Shop Page](niunius/static/niunius/readme/shop.png)
+![Blog Page](niunius/static/niunius/readme/readme_blog.png)
 
-The shop is for car parts. You can search by car models or by categories, or type whatever you are looking for in the search field.
+The blog is for articles, accessible to all users. Everyone can give a thumb up or thumb down, and see comments. 
+Extra functionalities as adding and editing articles are reserved for logged-in users.
+
+### Shop
+
+![Shop Page](niunius/static/niunius/readme/readme_shop.png)
+
+The shop is for car parts. You can search by car models or by categories, or type whatever you are looking for in the search box.
 Products are assigned to car models and to categories.
-All users are able to add products to the shopping cart. However, to place an order, you have to log in. 
-Then, to proceed with the order, you have to fill in delivery details. 
-For now the only payment option is a bank transfer. 
+All users can make shopping, why not. You do not have to create an account on the website as this may discourage potential clients.
+However, placing orders as a logged-in user allow you to check the orders' history on your profile page.
 
-### Tests
+### Car Service Station
 
-If you are curious, the app has been tested. All tests passed, and the coverage percentage is 78%.
-You can find tests in the *tests* catalogue. Run them with the command `pytest`. To generate the report, same as below one, use the command `xdg-open cov_html/index.html`
+Users may review car services offer and book a visit. 
+
+### Contact
+
+The contact page with the address and the map. Additionally, user can send a message to the site/club owner.
+
+## The end
+
+Thank you one more time for your interest.
+If you find anything should be added/amended/deleted in this project, you are very welcome to create pull requests. 

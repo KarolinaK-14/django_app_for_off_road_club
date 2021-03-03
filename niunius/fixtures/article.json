@@ -6,6 +6,7 @@
       "title": "W Błotku Najlepiej",
       "slug": "w-blotku-najlepiej",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas mattis finibus malesuada. Mauris erat tortor, commodo ac feugiat nec, feugiat nec leo. Pellentesque vitae quam dictum, facilisis tortor volutpat, efficitur erat. Donec sit amet metus accumsan, facilisis orci nec, laoreet orci. Suspendisse pretium erat orci, a tempor orci tempus ut. Proin vitae mi eget ex euismod viverra. Aliquam quis enim ligula. Nullam suscipit semper purus, in bibendum est mattis in. In sed leo fermentum, viverra ex non, interdum magna. Ut finibus dapibus nisl, eget mollis est gravida id. Praesent ut eros auctor, lacinia dui eu, ultricies est. Donec mauris orci, vestibulum non fringilla ac, condimentum tempus tortor.",
+      "added_by": 1,
       "added": "2020-10-15T22:17:44Z"
     }
   },
@@ -16,6 +17,7 @@
       "title": "Leśny Extreme",
       "slug": "lesny-extreme",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consectetur eros enim, ac dignissim diam mattis in. Maecenas malesuada convallis tempus. Donec id venenatis mi. Etiam ac fringilla nisi. Ut dictum consectetur porta. Duis pellentesque, metus ac iaculis sodales, mauris lacus elementum massa, sit amet feugiat ex metus in est. Aliquam molestie non diam vel fermentum.",
+      "added_by": 1,
       "added": "2020-09-15T22:17:44Z"
     }
   },
@@ -26,6 +28,7 @@
       "title": "Przez pustynię",
       "slug": "przez-pustynie",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse auctor magna aliquet, venenatis nisl ut, vulputate enim. Pellentesque ut eros dui. Donec gravida at arcu eget cursus. Aliquam eget ornare ligula, non luctus augue. Sed blandit id eros sit amet laoreet. Aliquam erat volutpat. Maecenas elementum scelerisque urna. Fusce ut turpis porta mi congue euismod ut sed turpis.",
+      "added_by": 1,
       "added": "2018-09-15T22:17:44Z"
     }
   },
@@ -34,8 +37,9 @@
     "pk": 4,
     "fields": {
       "title": "Uwaga! Kobieta za kółkiem",
-      "slug": "uwaga!-kobieta-za-kolkiem",
+      "slug": "uwaga-kobieta-za-kolkiem",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse auctor magna aliquet, venenatis nisl ut, vulputate enim. Pellentesque ut eros dui. Donec gravida at arcu eget cursus. Aliquam eget ornare ligula, non luctus augue. Sed blandit id eros sit amet laoreet. Aliquam erat volutpat. Maecenas elementum scelerisque urna. Fusce ut turpis porta mi congue euismod ut sed turpis.",
+      "added_by": 1,
       "added": "2020-08-15T22:17:44Z"
     }
   },
@@ -46,6 +50,18 @@
       "title": "Dla dzieci",
       "slug": "dla-dzieci",
       "content": "Aliquam odio lorem, lobortis ac egestas sit amet, porta sit amet lorem. Donec sollicitudin posuere tincidunt. Integer at odio ac lectus rhoncus pellentesque. Proin hendrerit elit at enim gravida, at rutrum mi tincidunt. Suspendisse mollis gravida justo, sed consectetur tellus blandit ut. Nunc sapien nisi, sollicitudin ut suscipit in, gravida convallis libero. Aliquam at nulla eget ante facilisis lobortis. In non congue diam, non ultricies erat. Donec in justo non eros accumsan laoreet ac id erat. Donec quis pretium arcu. Cras eget posuere lacus. Cras placerat nisl ex, vel lacinia ipsum fringilla at. Maecenas in consectetur sem. Nunc suscipit vulputate mauris et scelerisque.",
+      "added_by": 1,
+      "added": "2020-08-15T22:17:44Z"
+    }
+  },
+  {
+    "model": "niunius.article",
+    "pk": 6,
+    "fields": {
+      "title": "O Klubie",
+      "slug": "o-klubie",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla consectetur eget mauris interdum congue. Mauris a turpis sit amet dui tristique viverra. Vestibulum porttitor erat nisi. Vivamus diam nisl, posuere eu dignissim ut, viverra semper velit. Cras bibendum sapien sit amet sem vestibulum porta. Nullam elementum libero odio, ut mattis ipsum ornare eget. Duis dignissim eleifend diam at laoreet. Sed nec lorem tortor. Donec pretium ornare ullamcorper. Ut vel ex tempor, tincidunt ex id, porttitor ipsum. Curabitur eget elementum arcu. Nulla porttitor in mauris non pellentesque. Proin pharetra risus ipsum, ut tempor velit commodo id. Phasellus rhoncus mattis orci, eu tristique libero faucibus sit amet. Curabitur ullamcorper erat lorem, nec euismod ante vestibulum eget. Fusce eu justo egestas tellus interdum elementum.",
+      "added_by": 1,
       "added": "2020-08-15T22:17:44Z"
     }
   }

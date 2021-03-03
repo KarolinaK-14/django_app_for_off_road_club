@@ -4,7 +4,7 @@
     <div class="col-7 p-3">
     <div class="row">
         <div class="col-5">
-            <div class="row p-3" style="border: solid darkorange">
+            <div class="row p-3" style="border: solid #e3632d">
 
                 <p>{% firstof order.buyer.first_name order.guest_buyer_first_name %}</p>
                 <p>{% firstof order.buyer.last_name order.guest_buyer_last_name %}</p>
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="col-1"></div>
-        <div class="col-5 p-3" style="border: solid darkorange">
+        <div class="col-5 p-3" style="border: solid #e3632d">
             <ol>
                 {% for i in items %}
                 <li>{{ i.product.name }} {{ i.quantity }} szt. {{ i.value }} zł</li>

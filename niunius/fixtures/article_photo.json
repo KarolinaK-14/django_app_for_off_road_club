@@ -54,5 +54,13 @@
       "article": 5,
       "photo": "niunius/blog_img/dla_dzieci.jpg"
     }
+  },
+  {
+    "model": "niunius.articlephoto",
+    "pk": 8,
+    "fields": {
+      "article": 6,
+      "photo": "niunius/blog_img/people.jpg"
+    }
   }
 ]
