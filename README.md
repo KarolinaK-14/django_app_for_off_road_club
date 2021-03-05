@@ -17,7 +17,7 @@ To start exploring the project:
     except ImportError:
         pass
     ```
-4. run the command `python manage.py makemigrations` and then `python manage.py migrate`
+4. run the command `python manage.py migrate`
 5. load initial data to fill your database - use the command `python manage.py loaddata */fixtures/*.json`
 6. create a superuser to access the admin site: ` python manage.py createsuperuser`
 7. open additional terminal window and run `python -m smtpd -n -c DebuggingServer localhost:1025` - this is required by email settings, in this terminal you will see sent messages
