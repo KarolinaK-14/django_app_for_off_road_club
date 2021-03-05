@@ -1,3 +1,5 @@
+![status badge](https://github.com/KarolinaK-14/django_app_for_off_road_club/actions/workflows/style_and_testing.yml/badge.svg)
+
 Thank you for your interest in my project. Below you can read what it is about.
 
 # NIUNIUŚ
